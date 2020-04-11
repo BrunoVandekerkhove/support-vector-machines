@@ -1,0 +1,58 @@
+\documentclass{res/theme}
+
+\casename{Support Vector Machines}
+\subtitle{Bruno Vandekerkhove}
+\course{{H02D3A: Support Vector Machines}}
+\academicyear{2020}
+\date{}
+
+\usepackage{hyperref}
+\definecolor{blue}{rgb}{0.01, 0.28, 1.0}
+\definecolor{lightgray}{rgb}{0.95, 0.95, 0.95}
+\hypersetup{colorlinks=true, urlcolor=blue, citecolor=blue, filecolor=blue, linkcolor=blue}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large}
+  {\thesection}{1em}{}
+
+\usepackage{multicol}
+
+\RequirePackage{wallpaper}
+\ThisCenterWallPaper{0.7}{res/cover.png}
+\RequirePackage{afterpage}
+\pagecolor{lightgray}\afterpage{\nopagecolor}
+\RequirePackage[firstpage=true]{background}
+\def\Step{0.1cm}
+\tikzset{dotted lines/.style={black, loosely dotted,  thick}}
+\backgroundsetup{
+scale=1,
+angle=0,
+position={0,0},
+contents={
+\begin{tikzpicture}[remember picture,overlay]
+\draw[dotted lines,step=\Step,help lines]
+  (-10,-30) grid  (20,10);
+  \end{tikzpicture}
+  }
+}
+
+\newcommand{\tba}{\textcolor{red}{\textit{To be answered}}}
+
+\begin{document}
+
+\maketitle
+
+\begin{multicols*}{2}
+\raggedcolumns
+
+\tableofcontents
+
+\input{subfile}
+
+\end{multicols*}
+
+\end{document}
