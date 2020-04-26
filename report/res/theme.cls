@@ -73,16 +73,17 @@
 \newenvironment{code}{\captionsetup{type=listing}}{}
 \SetupFloatingEnvironment{listing}{name=Code snippet}
 
-\newcommand{\fakesection}[1]{
-	\section*{#1}
+\newcommand{\fakesection}[2]{
+	\section*{#1#2}
 	\par\refstepcounter{section}
 	\addcontentsline{toc}{section}{#1}
 }
-\newcommand{\fakesubsection}[1]{
-	\subsection*{#1}
+\newcommand{\fakesubsection}[2]{
+	\subsection*{#1#2}
 	\par\refstepcounter{subsection}
-	\addcontentsline{toc}{subsection}{\protect\numberline{\thesubsection}#1}
+	\addcontentsline{toc}{subsection}{#1}
 }
+
 
 
 \newtoks\authors
