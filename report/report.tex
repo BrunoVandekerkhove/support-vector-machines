@@ -20,6 +20,8 @@
   {\thesection}{1em}{}
 
 \usepackage{multicol}
+\usepackage{amsmath, amssymb}
+\usepackage{unicode-math}
 
 \RequirePackage{wallpaper}
 \ThisCenterWallPaper{0.7}{res/cover.png}
@@ -46,13 +48,17 @@ contents={
 
 \maketitle
 
-\begin{multicols*}{2}
-\raggedcolumns
+%\begin{multicols*}{2}
+%\raggedcolumns
+
+\begin{center}\textit{In this document each exercise session is dealt with in separate sections that are named correspondingly. Each of them is accompanied by a source file which has a code section for each exercise or homework.}\end{center}
 
 \tableofcontents
 
-\input{subfile}
+\input{classification}
+\input{fe+tsp}
+\input{ul+lsp}
 
-\end{multicols*}
+%\end{multicols*}
 
 \end{document}
