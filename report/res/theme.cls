@@ -69,7 +69,7 @@
 
 % MINTED
 \usepackage[newfloat,cachedir=minted]{minted}
-\usepackage{caption}
+\usepackage[font={footnotesize}]{caption}
 \newenvironment{code}{\captionsetup{type=listing}}{}
 \SetupFloatingEnvironment{listing}{name=Code snippet}
 
