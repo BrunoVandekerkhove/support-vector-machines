@@ -39,17 +39,17 @@ A dual form can be expressed by making use of Lagrange multipliers which in this
 \label{stanfordexample}
 \end{figure}
 
-\noindent The $\sigma$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For very large bandwidths the peaks around the data points are flattened out and linear separation in the feature space isn't possible anymore which may lead to a result similar to the linear kernel or may even lead to one class overtaking the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma$ is large a bigger value of $C$ can make the model more complex again. 
+The $\sigma$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For very large bandwidths the peaks around the data points are flattened out and linear separation in the feature space isn't possible anymore which may lead to a result similar to the linear kernel or may even lead to one class overtaking the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma$ is large a bigger value of $C$ can make the model more complex again. 
 
 \par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also uses more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
 
 \fakesubsection{Least-squares support vector machine classifier}{}
 
-Figure \ref{iris} depicts results with various polynomial kernels where $t=1$. This $t$ is called the \textit{constant} and it controls the importance of higher - versus lower-order terms in the polynomial as can be deduced when by applying the binomial theorem on the definition of the kernel :
+Figure \ref{iris} depicts results with various polynomial kernels where $t=1$. This $t$ is called the \textit{constant} and it controls the importance of higher - versus lower-order terms in the polynomial as can be deduced from the application of the binomial theorem to the definition of the kernel :
 $$(x^T\cdot y+\tau)^d=\sum_{i=0}^d\binom{d}{i}(x^T\cdot y)^{d-i}\cdot \tau^i$$
 The effect of $t$ is not very noticeable for small values of $d$ while for the higher degrees it tends to make the decision boundary more complex.
 
-\par\noindent When the degree $\delta$ is 1 the feature map is linear which is equivalent to the classic non-linear SVM problem while for higher degrees a boundary of increasing complexity is learned such that for $\delta\in\{3,4\}$ no data points are misclassified. To make it less likely that the model overfits a lower $\delta$ is likely to be preferable (which corresponds to Occam's razor).
+\par\noindent When the degree $\delta$ is 1 the feature map is linear which is equivalent to the classic non-linear SVM problem while for higher degrees a boundary of increasing complexity is learned such that for $\delta\in\{3,4\}$ no data points are misclassified. To make it less likely that the model overfits a lower $\delta$ is likely to be preferable (applying Occam's razor).
 
 %\begin{figure}[h]
 %\centering
@@ -93,41 +93,63 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \end{wrapfigure}
 \vspace{0.5cm}
 
-\par\noindent  In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results in the sample where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (25 for example) one class may overtake the other one as discussed before. In any case, it should be noted that only a few parameters were tried.
+\par\noindent  In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one as discussed before. The experiment is of limited value as only few parameter combinations were tried.
 
 \par\noindent To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that the all input data is used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
 
 \endgroup
 
-\par To some extent deciding what $k$ value to use parallels previous discussions about other parameters since there's a bias-variance tradeoff ; while larger $k$ values should provide a better estimate of the error they also suffer from higher variance as the result depends more on how representative the input data is. This becomes more important when the number of input data is small. Finally, $k$ shouldn't be too small (such that the training sets remain large enough), it should preferably be a divisor of $N$ (though this is not of primary importance) and if computational expense is an issue it cannot be large as many models need to be generated in that case.
+\par To some extent deciding what $k$ value to use parallels previous discussions about other parameters since there's a bias-variance tradeoff ; while larger $k$ values should provide a better estimate of the error they also suffer from higher variance as the result depends more on how representative the input data is. This becomes more important when the number of input data is small. Finally, $k$ shouldn't be too small (such that the training sets remain large enough), it should preferably be a divisor of $N$ (though this is not of primary importance) and if computational expense is an issue it cannot be large as many models would have to be generated.
 
-\par Automated tuning uses these validation methods in conjunction with a search procedure to find useful combinations of parameters. This search strategy has to deal with a non-convex problem and can be a simple grid search (performing validation for every combination of parameters specified by a grid partitioning the parameter space) or the Nelder-Mead method which aims to find the minimum of a function without needing its derivative. The latter considers a simplex and updates it iteratively until the minimum is found. It tends to execute faster than grid search especially when the number of parameters is high, though one could also consider a variant of grid search that starts with a grid of limited granularity until it finds a promising region in the parameter space on which grid search is performed again.
+\par Automated tuning uses these validation methods in conjunction with a search procedure to find useful combinations of parameters. This search strategy has to deal with a non-convex problem and can be a simple grid search (performing validation for every combination of parameters specified by a grid partitioning the parameter space) or the Nelder-Mead method. The latter aims to find the minimum of a function without needing its derivative by considering a simplex which is updated iteratively until it wraps around the minimum. It tends to execute faster than grid search especially when the number of parameters is high, though to address this one could also consider a variant of grid search that starts with a grid of limited granularity until it finds a promising region in the parameter space on which grid search is performed again.
 
-\par In the LS-SVM toolbox a technique called \textit{coupled simulated annealing} is used. This is a global optimisation technique which couples together several simulated annealing processes (inspired by coupled local minimisers' effectiveness compared to multi-start gradient descent optimisation). Its output is provided to either a grid search - or a Nelder-Mead algorithm. Results are the following :
+\par In the LS-SVM toolbox a technique called \textit{coupled simulated annealing} is used. This is a global optimisation technique which couples together several simulated annealing processes (inspired by coupled local minimisers' effectiveness compared to multi-start gradient descent optimisation). Its output is subsequently provided to either a grid search - or a Nelder-Mead algorithm. Results are the following :
 
 \begin{table}[h]
 \centering
 \begin{tabular}{c|ccc}
-\textit{Method} & \textit{Average} & \textit{STD} & \textit{Total runtime} \\
+\textit{Method} & $\gamma$ & $\sigma^2$ & \textit{Cost} \\
 \hline
-Grid search & XXX & XXX & XXX\\
-Nelder-Mead & XXX & XXX & XXX\\
+Grid search & 16983.8488 $\pm$ 100324.6730 & 10.5373 $\pm$ 83.0560 & 0.0339 $\pm$ 0.0063\\
+Nelder-Mead & 85111.5137 $\pm$ 75855.5677 & 12.8189 $\pm$ 71.4858 & 0.0349 $\pm$ 0.0069\\
 \end{tabular}
-\caption{Results of automated tuning strategies (average over ten runs).}
+\caption{Results of automated tuning strategies (averaged over 100 runs).}
 \label{automatedtuning}
 \end{table}
 
-Clearly the results are quite varied. A histogram of the results gives a more complete picture :
+Simulated annealing is a stochastic process such that the parameters end up varying quite a bit. The costs do not since they are minimised. A histogram of the results gives a more complete picture and shows that there are a few outliers that made the average $\gamma$ and $\sigma^2$ large :
 
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{../src/figures/iris/tuninghistogram}
-\caption{Results of automated tuning strategies in a histogram format.}
+\centering
+\includegraphics[width=0.25\textwidth]{../src/figures/iris/histogram_gamma}\quad
+\includegraphics[width=0.25\textwidth]{../src/figures/iris/histogram_sigma2}\quad
+\includegraphics[width=0.25\textwidth]{../src/figures/iris/histogram_cost}
+\caption{Histograms for 100 $\gamma$, $\sigma^2$ and costs returned by the automated tuning process.}
 \label{automatedtuninghistogram}
 \end{figure}
 
-Cleary (ADD DESCRIPTION HERE)
+Results of the automated tuning process correspond to the contour plots given in figure \ref{validation}. As for the runtimes, the grid search ended up being half as fast as the simplex method.
 
-\begin{wrapfigure}{r}{.45\textwidth}
+\begingroup
+\setlength{\columnsep}{0.75cm}
+\setlength{\intextsep}{0cm}
+\begin{wrapfigure}{l}{0pt}
+\centering
+\includegraphics[width=0.4\textwidth]{../src/figures/iris/bayesian/bayesian_probabilities}
+\caption{Probability estimates using the Bayesian framework. The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
+\label{irisbayesian}
+\end{wrapfigure}
+
+\vspace{0cm}
+
+An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the \textit{true positive rate (TPR)} is plotted in function of the \textit{false positive rate (FPR)}. The \textit{area under the curve (AUC)} can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ this happened to be 1 indicating a perfect classifier. One can note that if the \textit{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
+
+\par With a Bayesian framework which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.5 (equal probability of each class).
+
+\endgroup
+
+\begingroup
+\begin{wrapfigure}{r}{.4\textwidth}
 \begin{minipage}{\linewidth}
     \centering\captionsetup[subfigure]{justification=centering}
     \includegraphics[width=\linewidth]{../src/figures/iris/validation_1}
@@ -143,6 +165,8 @@ Cleary (ADD DESCRIPTION HERE)
 \caption{Grid search in conjunction with various validation techniques. The results differ and the results for the random split strategy varies between runs. $k$-fold crossvalidation appears to be a better approximation of the error but may generalise less well. Reasonable parameters lie in the yellow zone where the error reaches a maximum of about 10\%. A small bandwidth of between say, 0.1 and 1.0 and a regularization constant of 1.0 seems reasonable.}
 \label{validation}
 \end{wrapfigure}
+
+\endgroup
 
 \fakesubsection{Ripley dataset}{}
 
