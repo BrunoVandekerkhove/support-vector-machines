@@ -39,9 +39,9 @@ A dual form can be expressed by making use of Lagrange multipliers which in this
 \label{stanfordexample}
 \end{figure}
 
-The $\sigma$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For very large bandwidths the peaks around the data points are flattened out and linear separation in the feature space isn't possible anymore which may lead to a result similar to the linear kernel or may even lead to one class overtaking the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma$ is large a bigger value of $C$ can make the model more complex again. 
+The $\sigma$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For very large bandwidths linear separability in the infinite-dimensional feature space cannot be achieved anymore, the decision boundary becomes near-linear (separating the high-density areas of each class) or one class may even overtake the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma$ is large a bigger value of $C$ can make the model more complex again. 
 
-\par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also uses more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
+\par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also tends to use more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
 
 \fakesubsection{Least-squares support vector machine classifier}{}
 
@@ -49,7 +49,7 @@ Figure \ref{iris} depicts results with various polynomial kernels where $t=1$. T
 $$(x^T\cdot y+\tau)^d=\sum_{i=0}^d\binom{d}{i}(x^T\cdot y)^{d-i}\cdot \tau^i$$
 The effect of $t$ is not very noticeable for small values of $d$ while for the higher degrees it tends to make the decision boundary more complex.
 
-\par\noindent When the degree $\delta$ is 1 the feature map is linear which is equivalent to the classic non-linear SVM problem while for higher degrees a boundary of increasing complexity is learned such that for $\delta\in\{3,4\}$ no data points are misclassified. To make it less likely that the model overfits a lower $\delta$ is likely to be preferable (applying Occam's razor).
+\par\noindent When the degree $\delta$ is 1 the feature map is linear which is equivalent to the classic non-linear SVM problem while for higher degrees a boundary of increasing complexity is learned such that for $\delta\in\{3,4\}$ no data points are misclassified. To make it less likely that the model overfits a lower $\delta$ is likely to be preferable (this corresponds to the application of Occam's razor).
 
 %\begin{figure}[h]
 %\centering
@@ -88,7 +88,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \begin{wrapfigure}{r}{0pt}
 \centering
 \includegraphics[width=0.45\textwidth]{../src/figures/iris/tuning}
-\caption{Performance of various RBF kernels on the iris dataset. The orange curve denotes the performance of the model for varying $\gamma$ and fixed $\sigma^2=1.0$, the blue curve does the opposite ($\gamma=1.0$).}
+\caption{Performance of various RBF kernels on the iris dataset. The orange curve denotes the performance of the model for varying $\gamma$ and fixed $\sigma^2=1.0$, the blue curve does the opposite ($\gamma=1.0$, varying $\sigma^2$).}
 \label{iris2}
 \end{wrapfigure}
 \vspace{0.5cm}
@@ -108,7 +108,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \begin{table}[h]
 \centering
 \begin{tabular}{c|ccc}
-\textit{Method} & $\gamma$ & $\sigma^2$ & \textit{Cost} \\
+\textit{Method} & $\gamma$ & $\sigma^2$ & \textit{cost} \\
 \hline
 Grid search & 16983.8488 $\pm$ 100324.6730 & 10.5373 $\pm$ 83.0560 & 0.0339 $\pm$ 0.0063\\
 Nelder-Mead & 85111.5137 $\pm$ 75855.5677 & 12.8189 $\pm$ 71.4858 & 0.0349 $\pm$ 0.0069\\
