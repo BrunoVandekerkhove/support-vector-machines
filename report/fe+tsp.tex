@@ -67,34 +67,36 @@ The results are comparable to those obtained previously in the context of classi
 When making use of a validation set that very set cannot be used for training. Making use of a Bayesian framework is an alternative and allows one to infer appropriate parameter combinations while making full use of the dataset. Depending on the kernel that is being used either 2 or 3 levels of inference are applied. At each of these level Bayes' theorem is used to infer parameter values. The equations are : 
 
 \begin{equation}
-p(w,b|\mathcal{D},\mu,\zeta_{1\_N},\mathcal{H}_{\sigma}) = \frac{p(\mathcal{D}|w,b,\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}\cdot p(w,b|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})
+p(\textbf{w},\textbf{b}|\mathcal{D},\mu,\zeta_{1\_N},\mathcal{H}_{\sigma}) = \frac{p(\mathcal{D}|w,b,\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}\cdot p(w,b|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})
 \end{equation}
 \begin{equation}
-p(\mu,\zeta_{1\_N}|\mathcal{D},\mathcal{H}_{\sigma})=\frac{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}\cdot p(\mu,\zeta_{1\_N}|\mathcal{H}_{\sigma})
+p(\boldsymbol{\mu},\boldsymbol{\zeta_{1\_N}}|\mathcal{D},\mathcal{H}_{\sigma})=\frac{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}\cdot p(\mu,\zeta_{1\_N}|\mathcal{H}_{\sigma})
 \end{equation}
 \begin{equation}
-p(\mathcal{H}_{\sigma}|\mathcal{D})=\frac{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}{p(D)}\cdot p(\mathcal{H}_{\sigma})
+p(\boldsymbol{\mathcal{H}_{\sigma}}|\mathcal{D})=\frac{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}{p(D)}\cdot p(\mathcal{H}_{\sigma})
 \end{equation}
 
 As indicated by the colourings the evidence at any level equals the likelihood in the next level. At the first level one can take the logarithm of the product to see the relation with the primal form in the LS-SVM problem specification ; while the prior corresponds to the regularisation term the likelihood corresponds to the least squares cost term.
 
-\begingroup
-\setlength{\columnsep}{0.75cm}
-\setlength{\intextsep}{0cm}
-\begin{wrapfigure}{l}{0pt}
-\centering
-\includegraphics[width=0.4\textwidth]{../src/figures/estimation/bayesian_inference}
-\caption{Results of Bayesian inference applied on training data based on the \texttt{sinc} function with some added white noise (blue). The function estimate is green, error bars are red.}
-\label{bayesianinference}
-\end{wrapfigure}
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{../src/figures/estimation/bayesian_inference}
+        \caption{Results of Bayesian inference applied on training data based on the \texttt{sinc} function with some added white noise (blue). The function estimate is coloured in green, 95\% error bars are indicated in red.}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{../src/figures/estimation/ard}
+        \caption{Results of automatic relevance determination applied to 3-dimensional input data of which only the first dimension models the \texttt{sinc} function, the other 2 being white noise.}
+    \end{minipage}
+\end{figure}
 
-One nice facet of this approach is that one ends up with error bars indicating uncertainty. This can be seen in figure \ref{bayesianinference}.
-
-\endgroup
+One nice facet of this approach is that one ends up with error bars indicating uncertainty of the prediction. These error bars can be seen in figure \ref{bayesianinference} where the method is applied on the \texttt{sinc} function.
 
 \fakesubsection{Automatic Relevance Determination}{}
 
-
+By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification. In the case of an RBF kernel by using a (preferably diagonal) matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. The result of this process is given in figure \ref{ardsinc}. A crude way of doing relevance determination is by considering all possible non-empty subset of the input features and applying cross-validation on the resulting data to figure out which subset performs best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$).
 
 \fakesubsection{Robust regression}{}
 
