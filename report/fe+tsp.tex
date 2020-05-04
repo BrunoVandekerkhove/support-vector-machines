@@ -4,7 +4,7 @@
 
 Two datasets are experimented with in figure \ref{functionestimation}. The first exists of 20 points lying on a slope. Therefore one can expect the linear kernel (which generates a linear model) to outperform the others. The second (non-linear) dataset is more challenging such that other kernels which enable the SVM to model the non-linearities have to be used instead. 
 
-\par From the problem statement 
+\par From the problem statement :
 $$\min_{w,b,\xi,\xi^*}\frac{1}{2}w\cdot w^T+C\cdot\sum_{k=1}^N\xi+\xi^*$$
 where $\xi,\xi^*$ are slack variables representing deviation from the so-called \textit{$\epsilon$-insensitive tube} it can be deduced that the $C$ (the \textit{bound}) plays the usual role of a regularisation parameter, prioritising either the smoothness of the model or how much it fits the data (i.e. minimising the slack variables). $C=0$ leads to simple horizontal lines for the linear kernel which express the view that the two input features $x_1$ and $x_2$ aren't related. The $\epsilon$ parameter controls the width of the tube in which the data points are made to lie. A larger value decreases the number of support vectors and makes the model less accurate.
 
@@ -63,6 +63,18 @@ The results are comparable to those obtained previously in the context of classi
 \caption{Function estimation experiments with the \texttt{sinc} function. Noisy samples are fed to an LS-SVM. The green line is the estimated model, the blue dots represent the test data. $\rho$ is the mean squared error. Small $\sigma$ values make the model fit the noise.}
 \label{sincestimate}
 \end{figure}
+
+When making use of a validation set that very set cannot be used for training. Making use of a Bayesian framework is an alternative and allows one to infer appropriate parameter combinations while making full use of the dataset. Depending on the kernel that is being used either 2 or 3 levels of inference are applied. The evidence at any level equals the likelihood in the next level. 
+
+\begin{equation}
+p(w,b|\mathcal{D},\mu,\zeta_{1\_N},\mathcal{H}_{\sigma}) = \frac{p(\mathcal{D}|w,b,\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}\cdot p(w,b|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})
+\end{equation}
+\begin{equation}
+p(\mu,\zeta_{1\_N}|\mathcal{D},\mathcal{H}_{\sigma})=\frac{\textcolor{cyan}{p(\mathcal{D}|\mu,\zeta_{1\_N},\mathcal{H}_{\sigma})}}{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}\cdot p(\mu,\zeta_{1\_N}|\mathcal{H}_{\sigma})
+\end{equation}
+\begin{equation}
+p(\mathcal{H}_{\sigma}|\mathcal{D})=\frac{\textcolor{teal}{p(\mathcal{D}|\mathcal{H}_{\sigma})}}{p(D)}\cdot p(\mathcal{H}_{\sigma})
+\end{equation}
 
 \fakesubsection{Automatic Relevance Determination}{}
 
