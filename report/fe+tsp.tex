@@ -102,11 +102,30 @@ By modifying the kernel function for the LS-SVM dual formulation it becomes poss
 
 \fakesubsection{Robust regression}{}
 
-Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit.
+Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit due to the use of the least squares loss, which penalises outliers more than the \textit{mean absolute error} does. If the noise on the data set is Gaussian then the least squares loss is appropriate, but in general the distribution of the noise is not known and in the case of the toy dataset dealt with here the noise isn't normally distributed. The idea, then, is to find an LS-SVM model as per usual and apply methods from robust statistics on the resulting parameters. Specificially, a weight is assigned to each data point based on the deviation of their error. Some possible weight functions are the following :
+\begin{table}[h]
+\begin{tabular}{c|cccc}
+& \textit{Huber} & \textit{Hampel} & \textit{Logistic} & \textit{Myriad}\\
+\hline
+\textit{Weight function} $W(x)$ & $\begin{cases}1\quad\text{if}\ |r|<\beta\\\frac{\beta}{|r|}\quad\text{if}\ |r|\geq\beta\end{cases}$ & $\begin{cases}1\quad\text{if}\ |r|<\beta_1\\\frac{b_2-|r|}{b_2-b_1}\quad\text{if}\ \beta_1\leq|r|\leq\beta_2\\0\quad\text{if}\ |r|>\beta_2\end{cases}$ & $\frac{tanh(r)}{r}$ & $\frac{\delta^2}{\delta^2+r^2}$\\
+\end{tabular}
+\caption{Possible weight functions for use in robust regression with LS-SVMs.}
+\label{roburegwf}
+\end{table}
 
-By applying cross-validation on any subset of the input features one can consider the most promising subset as having the relevant features.
 
-\par The \textit{mean absolute error} penalises outliers less than the \texttt{mean squared error} does as the latter squares the error.
+\begin{figure}[h]
+\centering
+\subfloat[Non-robust regression.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_non}}
+\\
+\subfloat[\textit{Huber} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_whuber}}\qquad
+\subfloat[\textit{Hampel} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_whampel}}
+\\
+\subfloat[\textit{Logistic} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_wlogistic}}\qquad
+\subfloat[\textit{Myriad} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_wmyriad}}
+\caption{Comparing non-robust regression to robust regression with a variety of weight functions. The smalles \textit{mse} on the test set was obtained with the \textit{Hampel} weight function.}
+\label{sincestimate}
+\end{figure}
 
 \fakesubsection{Introduction: time series prediction}{}
 
