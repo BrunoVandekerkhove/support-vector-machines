@@ -29,7 +29,7 @@ where $\xi,\xi^*$ are slack variables representing deviation from the so-called 
 
 \fakesubsection{A simple example: the sinc function}{}
 
-Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for a case that is clearly overfitting. In this case the underlying function is known and it seems reasonable to take $\sigma\in\{0.1,1.0\}$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends strongly on the training set.
+Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for $\sigma^2=1.0,\gamma=10^6$. The smaller $\sigma^2$ value (0.01) leads to overfitting. In this case the underlying function is known and it seems reasonable to take $\sigma\in\{0.1,1.0\}$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends strongly on the training set and even for a given training set there's no unique parameter combination that works best.
 
 \par Results of automated tuning are shown hereunder :
 
@@ -98,11 +98,15 @@ One nice facet of this approach is that one ends up with error bars indicating u
 
 \fakesubsection{Automatic Relevance Determination}{}
 
-By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification. In the case of an RBF kernel by using a (preferably diagonal) matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. The result of this process is given in figure \ref{ardsinc}. A crude way of doing relevance determination is by considering all possible non-empty subset of the input features and applying cross-validation on the resulting data to figure out which subset performs best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$).
+By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification. In the case of an RBF kernel by using a (preferably diagonal) matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. The result of this process is given in figure \ref{ardsinc}. An other, crude way of doing relevance determination is by considering all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset performs best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$).
 
 \fakesubsection{Robust regression}{}
 
+Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit.
+
 By applying cross-validation on any subset of the input features one can consider the most promising subset as having the relevant features.
+
+\par The \textit{mean absolute error} penalises outliers less than the \texttt{mean squared error} does as the latter squares the error.
 
 \fakesubsection{Introduction: time series prediction}{}
 
