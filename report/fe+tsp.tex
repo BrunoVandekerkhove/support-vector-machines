@@ -113,19 +113,18 @@ Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Ou
 \label{roburegwf}
 \end{table}
 
-After assigning the weights a weighted LS-SVM is trained and this process may be repeated as desired. Results with 4 weight functions are compared with a non-robust LS-SDM approach in figure \ref{robustsinc}
-
+After assigning the weights a weighted LS-SVM is trained and this process may be repeated as desired. Results with 4 weight functions are compared with a non-robust LS-SDM approach in figure \ref{robustsinc}.
 
 \begin{figure}[h]
 \centering
-\subfloat[Non-robust regression.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_non}}\qquad
-\subfloat[Error values for the non-robust regression ($\frac{\alpha_k}{\gamma}$). After robust regression the errors decrease for the non-outliers which means that aside from those 6 outliers at the top the remaining values are centered around the x-axis.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_non_alpha}}
+\subfloat[Non-robust regression.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_non}}\qquad
+\subfloat[Error values for the non-robust regression ($\frac{\alpha_k}{\gamma}$). After robust regression the errors decrease for the non-outliers which means that aside from those 6 outliers at the top the remaining values are centered around the x-axis.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_non_alpha}}
 \\
-\subfloat[\textit{Huber} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_whuber}}\qquad
-\subfloat[\textit{Hampel} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_whampel}}
+\subfloat[\textit{Huber} weight function.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_whuber}}\qquad
+\subfloat[\textit{Hampel} weight function.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_whampel}}
 \\
-\subfloat[\textit{Logistic} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_wlogistic}}\qquad
-\subfloat[\textit{Myriad} weight function.]{\includegraphics[width=0.45\textwidth]{../src/figures/estimation/robustregression_wmyriad}}
+\subfloat[\textit{Logistic} weight function.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_wlogistic}}\qquad
+\subfloat[\textit{Myriad} weight function.]{\includegraphics[width=0.3\textwidth]{../src/figures/estimation/robustregression_wmyriad}}
 \caption{Comparing non-robust regression to robust regression. A variety of weight functions are considered. The smallest \textit{mse} on the test set was obtained with the \textit{Hampel} weight function. The noise is not normally distributed in contrast with the datasets shown before.}
 \label{robustsinc}
 \end{figure}
