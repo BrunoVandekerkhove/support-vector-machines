@@ -1,5 +1,5 @@
-%data = load('breast_cancer_wisconsin_data.mat','-ascii'); function_type = 'c';
-data = load('shuttle.dat','-ascii'); function_type = 'c';  data = data(1:700,:);
+data = load('breast_cancer_wisconsin_data.mat','-ascii'); function_type = 'c';
+%data = load('shuttle.dat','-ascii'); function_type = 'c';  data = data(1:700,:);
 % data = load('california.dat','-ascii'); function_type = 'f';
 % addpath('../LSSVMlab')
 
