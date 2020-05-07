@@ -1,11 +1,11 @@
 \fakesection{Classification}{\hfill\small\texttt{/src/session\_1/.m}}
 
 \begingroup
-\setlength{\columnsep}{0.75cm}
-\setlength{\intextsep}{1cm}
+\setlength{\columnsep}{0.5cm}
+\setlength{\intextsep}{0.5cm}
 \begin{wrapfigure}{r}{0pt}
-\includegraphics[width=0.5\textwidth]{../src/figures/twogaussians.pdf}
-\caption{Decision boundary for two Gaussian distributions with equal covariance matrices.}
+\includegraphics[width=0.45\textwidth]{../src/figures/twogaussians.pdf}
+\caption{Decision boundary (in orange) for two Gaussian distributions with equal covariance matrices.}
 \label{twogaussians}
 \end{wrapfigure}
 \fakesubsection{Two Gaussians}{}
@@ -15,7 +15,7 @@ $(-1,-1)$ and $(1,1)$, which gives $f(x)=-x$ as a decision boundary.
 To deal with the non-linearly separable classification problem in the example one solves the following minimisation problem, where the hyperparameter $C$ controls the tradeoff between maximising the margin and making sure that the data lies on the correct side of that margin :
 
 \endgroup
-
+\vspace{-0.5cm}
 $$\min_x\frac{1}{2}\cdot w^T\cdot w+C\cdot \sum_{k=1}^N\xi_k\qquad\text{such that $y_k\cdot[w^T\cdot x_k+b]\geq 1-\xi_k$ and $\xi_k\geq 0$ $(\forall k\in\{1,..,N\})$}$$
 A dual form can be expressed by making use of Lagrange multipliers which in this context are also called \textit{support values}. Any data points for which the corresponding support value isn't zero are called \textit{support vectors}. These lie close to the boundary or are misclassified.
 
@@ -39,7 +39,7 @@ A dual form can be expressed by making use of Lagrange multipliers which in this
 \label{stanfordexample}
 \end{figure}
 
-The $\sigma$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For very large bandwidths linear separability in the infinite-dimensional feature space cannot be achieved anymore, the decision boundary becomes near-linear (separating the high-density areas of each class) or one class may even overtake the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma$ is large a bigger value of $C$ can make the model more complex again. 
+The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For $\sigma^2$ small enough you can separate any two classes - the Gaussian kernels are universal. But for very large bandwidths linear separability in the infinite-dimensional feature space cannot be achieved anymore such that the decision boundary becomes near-linear (separating the high-density areas of each class) or one class may even overtake the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma^2$ is large a bigger value of $C$ can make the model more complex again. 
 
 \par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also tends to use more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
 
@@ -70,7 +70,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 %\subfloat[$\gamma=10.0,\delta=4,\rho=0.0$]{\includegraphics[width=0.3\textwidth]{../src/figures/iris/t=1/4_100}}
 %\caption{Visualisation of the results of experiments with polynomial kernels on the iris dataset ($\delta$ is the degree of the polynomial, $\rho$ the misclassification rate on the test set, $t$ is fixed to 1). As the degree of the kernel increases, the misclassification error drops.}
 %\end{figure}
-
+\vspace{-0.5cm}
 \begin{wrapfigure}{l}{0pt}
 \hspace*{-0.67cm} 
 \centering
@@ -136,7 +136,7 @@ Results of the automated tuning process correspond to the contour plots given in
 \begin{wrapfigure}{l}{0pt}
 \centering
 \includegraphics[width=0.4\textwidth]{../src/figures/iris/bayesian/bayesian_probabilities}
-\caption{Probability estimates using the Bayesian framework. The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
+\caption{Posterior probability estimates using a Bayesian approach ($\gamma\approx0.038,\sigma^2\approx 0.56$). The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
 \label{irisbayesian}
 \end{wrapfigure}
 
@@ -144,7 +144,7 @@ Results of the automated tuning process correspond to the contour plots given in
 
 An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the \textit{true positive rate (TPR)} is plotted in function of the \textit{false positive rate (FPR)}. The \textit{area under the curve (AUC)} can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ this happened to be 1 indicating a perfect classifier. One can note that if the \textit{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
 
-\par With a Bayesian framework which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.5 (equal probability of each class).
+\par Using a Bayesian approach which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot of these posterior probabilities for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.5 (equal probability of each class).
 
 \endgroup
 
