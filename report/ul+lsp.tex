@@ -79,9 +79,9 @@ Classification problems were considered in the first section of this report. In 
 
 \fakesubsection{Fixed-size LS-SVM}{}
 
-Sometimes the amount of data that is being dealt with is too large such that some of the matrices like the kernel matrix involved in the dual formulations cannot be stored in memory. Iterative methods can then be used but the approach considered here is based on the so-called Nystr\"om method. The goal is to find the solutions for the parameters in the primal formulation (i.e. $w$ and $b$) since this formulation is appropriate when the number of input dimensions is small (the dual form is preferred when the number of training data is small).
+Sometimes the amount of data that is being dealt with is too large such that some of the matrices like the kernel matrix involved in the dual formulations cannot be stored in memory. It becomes desirable, then, to solve the problem in the primal rather than in the dual space (it's the other way round when the number of input dimensions is high). The problem with this is that the feature map $\phi(x)$ is generally not known, only the kernel function representing dot products is made explicit.
 
-\par The Nystr\"om method is traditionally used for integral approximation and in this context it implies taking a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the whole matrix.
+\par While decomposition can be used for this the approach that is considered in the case of fixed-size LS-SVMs is the Nystr\"om method which is traditionally used for integral approximation. In the current setting it means that one takes a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the feature map $\phi(x)$ such that a parametric solution can be found. For fixed-size LS-SVMs the subsample starts random but is then updated iteratively as long as the Renyi entropy improves. This metric can be approximated by taking the sum of the elements of the kernel.
 
 \fakesubsection{Kernel principal component analysis}{}
 
