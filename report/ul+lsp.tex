@@ -65,13 +65,13 @@ Classification problems were considered in the first section of this report. In 
 \includegraphics[width=0.45\textwidth]{../src/figures/spectral/rings_clusters_10}
 \includegraphics[width=0.4\textwidth]{../src/figures/spectral/rings_block_10}
 \end{minipage}}\quad
-\subfloat[$\sigma^2=0.02$.]{
+\subfloat[$\sigma^2=1.0$.]{
 \begin{minipage}{0.48\textwidth}
-\includegraphics[width=0.45\textwidth]{../src/figures/spectral/rings_clusters_20}
-\includegraphics[width=0.4\textwidth]{../src/figures/spectral/rings_block_20}
+\includegraphics[width=0.45\textwidth]{../src/figures/spectral/rings_clusters_1000}
+\includegraphics[width=0.4\textwidth]{../src/figures/spectral/rings_block_1000}
 \end{minipage}}\\
 %
-\caption{Clustering of a toy dataset consisting of two rings. KSC applied using a kernel with varying $\sigma^2$ values.}
+\caption{Clustering of a toy dataset consisting of two rings. KSC applied using a kernel with varying $\sigma^2$ values. When this bandwidth is too large the reach of influence of each data point becomes too large and the clustering becomes subpar.}
 \label{spectraltoy}
 \end{figure}
 
