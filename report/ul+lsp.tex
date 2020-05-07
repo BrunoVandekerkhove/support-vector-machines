@@ -99,11 +99,24 @@ Classification problems were considered in the first section of this report. In 
 
 Sometimes the amount of data that is being dealt with is too large such that some of the matrices like the kernel matrix involved in the dual formulations cannot be stored in memory. It becomes desirable, then, to solve the problem in the primal rather than in the dual space (it's the other way round when the number of input dimensions is high). The problem with this is that the feature map $\phi(x)$ is generally not known, only the kernel function representing dot products is made explicit.
 
-\par While decomposition can be used for this the approach that is considered in the case of fixed-size LS-SVMs is the Nystr\"om method which is traditionally used for integral approximation. In the current setting it means that one takes a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the feature map $\phi(x)$ such that a parametric solution can be found. For fixed-size LS-SVMs the subsample starts random but is then updated iteratively as long as the Renyi entropy improves. This metric can be approximated by taking the sum of the elements of the kernel.
+\par While decomposition can be used for this the approach that is considered in the case of fixed-size LS-SVMs is the Nystr\"om method which is traditionally used for integral approximation. In the current setting it means that one takes a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the feature map $\phi(x)$ such that a parametric solution can be found. For fixed-size LS-SVMs the subsample starts randomly but is updated iteratively as long as the Renyi entropy improves. This metric can be approximated by taking the sum of the elements of the kernel.
 
-\par Examples of subsamples obtained through optimisation of the Renyi entropy are shown in figure \ref{fixedsample}. It looks as though a larger value for $\sigma^2$ leads to a selection of data points that are more spread out.
+\par Examples of subsamples obtained through optimisation of the Renyi entropy are shown in figure \ref{fixedsample}. The kernel is a Gaussian one, the input data is normally distributed. It looks as though a larger value for $\sigma^2$ leads to a selection of data points that are more spread out.
+
+\par The fixed-size LS-SVM approach can be compared 
 
 \endgroup
+
+\begin{figure}[h]
+\centering
+%
+\subfloat[$\sigma^2=0.4,n_h=2$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_error}}\quad
+\subfloat[$\sigma^2=0.4,n_h=6$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_sv}}\quad
+\subfloat[$\sigma^2=0.4,n_h=20$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_time}}\\
+%
+\caption{De-noising a toy dataset consisting of two spirals. The number of data points equals 400, the data point dispersion 0.3. $n_h$ is the number of components. Retaining too few principal components leads to a poor result while retaining too many of them prevents any de-noising.}
+\label{kpcatoy}
+\end{figure}
 
 \fakesubsection{Kernel principal component analysis}{}
 
