@@ -103,19 +103,19 @@ Sometimes the amount of data that is being dealt with is too large such that som
 
 \par Examples of subsamples obtained through optimisation of the Renyi entropy are shown in figure \ref{fixedsample}. The kernel is a Gaussian one, the input data is normally distributed. It looks as though a larger value for $\sigma^2$ leads to a selection of data points that are more spread out.
 
-\par The fixed-size LS-SVM approach can be compared 
+\par In figure \ref{fscomp} a fixed-size LS-SVM approach is compared with a variant which applies an $\ell_0$-penalty after generating a fixed-size LS-SVM solution. This post-processing does not influence the total runtime because its complexity is $\mathcal{O}(M^3)$ while that of the fixed-size LS-SVM is $\mathcal{O}(NM^2)$ j. While the error increases the number of support vector is much lower for the latter method. This is not surprising since the $\ell_0$-norm counts the number of non-zero values which means that it aims for sparse representations. The error drops as well, presumably because the model generalises better.
 
 \endgroup
 
 \begin{figure}[h]
 \centering
 %
-\subfloat[$\sigma^2=0.4,n_h=2$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_error}}\quad
-\subfloat[$\sigma^2=0.4,n_h=6$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_sv}}\quad
-\subfloat[$\sigma^2=0.4,n_h=20$.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_time}}\\
+\subfloat[Error estimation.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_error}}\quad
+\subfloat[Number of support vectors.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_sv}}\quad
+\subfloat[Time taken for generating the models.]{\includegraphics[width=0.25\textwidth]{../src/figures/fixedsize/comparison_time}}\\
 %
-\caption{De-noising a toy dataset consisting of two spirals. The number of data points equals 400, the data point dispersion 0.3. $n_h$ is the number of components. Retaining too few principal components leads to a poor result while retaining too many of them prevents any de-noising.}
-\label{kpcatoy}
+\caption{Comparison of the standard fixed-size LS-SVM approach with a modified approach applying an $\ell_0$-penalty to obtain a sparser representation.}
+\label{fscomp}
 \end{figure}
 
 \fakesubsection{Kernel principal component analysis}{}
