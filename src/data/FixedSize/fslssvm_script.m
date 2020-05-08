@@ -13,7 +13,7 @@ testY = [];
 
 k = 6;
 % function_type = 'c'; %'c' - classification, 'f' - regression  
-kernel_type = 'lin_kernel'; % or 'lin_kernel', 'poly_kernel'
+kernel_type = 'RBF_kernel'; % or 'lin_kernel', 'poly_kernel'
 global_opt = 'csa'; % 'csa' or 'ds'
 
 %Process to be performed
