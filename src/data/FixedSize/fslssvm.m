@@ -118,13 +118,16 @@ else
     figure;
     boxplot(process_matrix_err,'Label',user_process);
     ylabel('Error estimate');
-    title('Error Comparison for different approaches (user processes)');
+    %title('Error Comparison for different approaches (user processes)');
+    export_pdf(gcf, 'fixedsize/comparison_error')
     figure;
     boxplot(process_matrix_sv,'Label',user_process);
     ylabel('SV estimate');
-    title('Number of SV for different approaches (user processes)');
+    %title('Number of SV for different approaches (user processes)');
+    export_pdf(gcf, 'fixedsize/comparison_sv')
     figure;
     boxplot(process_matrix_time,'Label',user_process);
     ylabel('Time estimate');
-    title('Comparison for time taken by different approaches (user processes)');
+    %title('Comparison for time taken by different approaches (user processes)');
+    export_pdf(gcf, 'fixedsize/comparison_time')
 end;
