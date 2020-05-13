@@ -2,7 +2,7 @@
 
 \fakesubsection{Kernel principal component analysis}{}
 
-The point of \textit{linear principal component analysis (PCA)} is to find a linear transformation (a projection) onto an orthogonal basis such that the variance of the projected data points is maximised. It's an old method introduced by Pearson. The transformed variables are called principal components. By disregarding some of these it is possible to achieve a dimensionality reduction while still capturing most of the important information carried by the input data. This can be used for denoising purposes.
+The point of \textit{linear principal component analysis (PCA)} is to find a linear transformation (a projection onto an orthogonal basis) such that the variance of the projected data points is maximised. It's an old method introduced by Pearson. The transformed variables are called principal components. By disregarding some of these it is possible to achieve a dimensionality reduction while still capturing most of the important information carried by the input data. This can be used for denoising purposes.
 
 \begin{figure}[h]
 \centering
@@ -89,7 +89,7 @@ Classification problems were considered in the first section of this report. In 
 \label{fixedsample}
 \end{wrapfigure}
 
-\par The Laplacian matrix captures a lot of information about the graph such as the number of connected components (which equals the multiplicity of the eigenvalue $\lambda=0$). Related to this number is the property that if the data is sorted according to cluster membership the similarity matrix becomes block-diagonal. Such depictions are used in the figures hereunder. 
+\par The Laplacian matrix captures a lot of information about the graph such as the number of connected components (which equals the multiplicity of the eigenvalue $\lambda=0$). Related to this number is the property that if the data is sorted according to cluster membership the similarity matrix becomes block-diagonal. Such depictions are used in the figures above. 
 
 \par \textit{Kernel spectral clustering (KSC)} reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. 
 
@@ -99,7 +99,7 @@ Classification problems were considered in the first section of this report. In 
 
 Sometimes the amount of data that is being dealt with is too large such that some of the matrices like the kernel matrix involved in the dual formulations cannot be stored in memory. It becomes desirable, then, to solve the problem in the primal rather than in the dual space (it's the other way round when the number of input dimensions is high). The problem with this is that the feature map $\phi(x)$ is generally not known, only the kernel function representing dot products is made explicit.
 
-\par While decomposition can be used for this the approach that is considered in the case of fixed-size LS-SVMs is the Nystr\"om method which is traditionally used for integral approximation. In the current setting it means that one takes a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the feature map $\phi(x)$ such that a parametric solution can be found. For fixed-size LS-SVMs the subsample starts randomly but is updated iteratively as long as the Renyi entropy improves. This metric can be approximated by taking the sum of the elements of the kernel.
+\par While decomposition can be used for this the approach that is considered in the case of fixed-size LS-SVMs is the Nystr\"om method which is traditionally used for integral approximation. In the current setting it means that one takes a random subsample of the input data (of size $M\ll N$) and then uses this to approximate the feature map $\phi(x)$ such that a parametric solution can be found. For fixed-size LS-SVMs the subsample starts randomly and is then updated iteratively as long as the Renyi entropy improves. This metric can be approximated by taking the sum of the elements of the kernel.
 
 \par Examples of subsamples obtained through optimisation of the Renyi entropy are shown in figure \ref{fixedsample}. The kernel is a Gaussian one, the input data is normally distributed. It looks as though a larger value for $\sigma^2$ leads to a selection of data points that are more spread out.
 
