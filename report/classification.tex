@@ -95,7 +95,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 
 \par\noindent  In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one as discussed before. The experiment is of limited value as only few parameter combinations were tried.
 
-\par\noindent To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that the all input data is used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
+\par\noindent To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that all the input data can be used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
 
 \endgroup
 
@@ -128,7 +128,7 @@ Simulated annealing is a stochastic process such that the parameters end up vary
 \label{automatedtuninghistogram}
 \end{figure}
 
-Results of the automated tuning process correspond to the contour plots given in figure \ref{validation}. As for the runtimes, the grid search ended up being half as fast as the simplex method.
+Results of the automated tuning process correspond to the contour plots given in figure \ref{validation}. As for the runtimes, the grid search ended up being twice as slow as the simplex method.
 
 \begingroup
 \setlength{\columnsep}{0.75cm}
