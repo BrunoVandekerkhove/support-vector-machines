@@ -1,4 +1,4 @@
-\fakesection{Classification}{\hfill\small\texttt{/src/session\_1/.m}}
+\fakesection{Classification}{\hfill\small\texttt{/src/session\_1.m}, \texttt{/src/homework\_1.m}}
 
 \begingroup
 \setlength{\columnsep}{0.5cm}
@@ -17,11 +17,9 @@ To deal with the non-linearly separable classification problem in the example on
 \endgroup
 \vspace{-0.5cm}
 $$\min_x\frac{1}{2}\cdot w^T\cdot w+C\cdot \sum_{k=1}^N\xi_k\qquad\text{such that $y_k\cdot[w^T\cdot x_k+b]\geq 1-\xi_k$ and $\xi_k\geq 0$ $(\forall k\in\{1,..,N\})$}$$
-A dual form can be expressed by making use of Lagrange multipliers which in this context are also called \textit{support values}. Any data points for which the corresponding support value isn't zero are called \textit{support vectors}. These lie close to the boundary or are misclassified.
+A dual form can be expressed by making use of Lagrange multipliers which in this context are also called \textit{support values}. Any data points for which the corresponding support value isn't zero are called \textit{support vectors}. These lie close to the boundary or are misclassified\footnote{In the dual problem formulation the $\alpha$ values are minimised for those data points that are `similar' to data points that belong to the same class.}.
 
-\par\noindent For the given toy dataset it can readily be seen in figure \ref{stanfordexample} (top row) that for a decreasing value of $C$ the margin does become larger and that less \textit{`slacking'} is allowed for. By adding data points close to the boundary or at the \textit{`wrong'} side of it the margin usually changes a lot and the new data points nearly always become support vectors.
-
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \subfloat[$C = 0.01$ (large margin, lots of \textit{`slacking'}.)]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvas01}}\qquad
 \subfloat[$C = 1$]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvas1}}\qquad
@@ -34,12 +32,18 @@ A dual form can be expressed by making use of Lagrange multipliers which in this
 \subfloat[$\sigma=100$]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasrbf100}}\\
 \subfloat[Negative data point added far away from the boundary.]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasnewrbf1}}\qquad
 \subfloat[Positive data point added inside the boundary.]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasnewrbf2}}\qquad
-\subfloat[Positive data point added inside the boundary.]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasnewrbf3}}
-\caption{Visualisation of various experiments with $C$ (top row), addition of points using the linear kernel (second row), $\sigma$ (third row) and addition of points using the RBF kernel (last row). The number of iterations (tends to) increase as $C$ gets larger or as the number of data points increases.}
+\subfloat[Positive data point added inside the boundary.]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasnewrbf3}}\\
+\subfloat[Modelling the \texttt{XOR} function ($\sigma^2=0.1$).]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasxor3}}\qquad
+\subfloat[Modelling the \texttt{XOR} function ($\sigma^2=100$).]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasxor}}\qquad
+\subfloat[Same as the left two pictures with another data point belonging to the positive class.]{\includegraphics[width=0.17\textwidth]{../src/figures/stanford/canvasxor2}}\\
+\caption{Visualisation of various experiments with $C$ (top row), addition of points using the linear kernel (second row), $\sigma$ (third row), addition of points using the RBF kernel (fourth row) and the $\texttt{XOR}$ function (last row). The number of iterations (tends to) increase as $C$ gets larger or as the number of data points increases.}
 \label{stanfordexample}
 \end{figure}
+\clearpage
 
-The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For $\sigma^2$ small enough you can separate any two classes - the Gaussian kernels are universal. But for very large bandwidths linear separability in the infinite-dimensional feature space cannot be achieved anymore such that the decision boundary becomes near-linear (separating the high-density areas of each class) or one class may even overtake the other. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma^2$ is large a bigger value of $C$ can make the model more complex again. 
+\par\noindent For the given toy dataset it can readily be seen in figure \ref{stanfordexample} (top row) that for a decreasing value of $C$ the margin does become larger and that less \textit{`slacking'} is allowed for. By adding data points close to the boundary or at the \textit{`wrong'} side of it the margin usually changes a lot and the new data points nearly always become support vectors.
+
+The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For $\sigma^2$ small enough any two classes get separated in a very strict way - the Gaussian kernels are universal. For very large bandwidths the reach of each data point becomes large and the decision boundary become near-linear in this particular case\footnote{When the demo is run on a 4-point dataset representing the \texttt{XOR} function a checkerboard pattern is obtained when $\sigma^2$ is large (as seen in figure \ref{stanfordexample}, last row).} as the density areas of each class end up competing. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma^2$ is large a bigger value of $C$ can make the model more complex again. 
 
 \par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also tends to use more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
 
@@ -70,17 +74,21 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 %\subfloat[$\gamma=10.0,\delta=4,\rho=0.0$]{\includegraphics[width=0.3\textwidth]{../src/figures/iris/t=1/4_100}}
 %\caption{Visualisation of the results of experiments with polynomial kernels on the iris dataset ($\delta$ is the degree of the polynomial, $\rho$ the misclassification rate on the test set, $t$ is fixed to 1). As the degree of the kernel increases, the misclassification error drops.}
 %\end{figure}
+
 \vspace{-0.5cm}
-\begin{wrapfigure}{l}{0pt}
-\hspace*{-0.67cm} 
+\begin{figure}[htp]
 \centering
-\subfloat[$\delta=1,\rho=0.55$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/1_10}}\quad
-\subfloat[$\delta=2,\rho=0.05$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/2_10}}\quad
-\subfloat[$\delta=3,\rho=0.0$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/3_10}}\quad
-\subfloat[$\delta=4,\rho=0.0$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/4_10}}\quad
-\caption{Visualisation of the results of experiments with polynomial kernels on the iris dataset ($\delta$ is the degree of the polynomial, $\rho$ the misclassification rate on the test set, $\tau$ and $\gamma$ are fixed to 1). As the degree of the kernel increases, the misclassification error drops.}
+\subfloat[$\delta=1,\rho=0.55$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/1_10}}\hfil
+\subfloat[$\delta=2,\rho=0.05$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/2_10}}\hfil
+\subfloat[$\delta=3,\rho=0.0$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/3_10}}\hfil
+\subfloat[$\delta=4,\rho=0.0$]{\includegraphics[width=0.25\textwidth]{../src/figures/iris/t=1/4_10}}\hfil
+\caption{Visualisation of the results of experiments with polynomial kernels on the iris dataset ($\delta$ is the degree of the polynomial, $\rho$ the misclassification rate on the test set, $t$ is fixed to 1). As the degree of the kernel increases, the misclassification error drops.}
 \label{iris}
-\end{wrapfigure}
+\end{figure}
+
+\par In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one as discussed before. The experiment is of limited value as only few parameter combinations were tried.
+
+\par To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that all the input data can be used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
 
 \begingroup
 \setlength{\columnsep}{0.75cm}
@@ -91,17 +99,12 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \caption{Performance of various RBF kernels on the iris dataset. The orange curve denotes the performance of the model for varying $\gamma$ and fixed $\sigma^2=1.0$, the blue curve does the opposite ($\gamma=1.0$, varying $\sigma^2$).}
 \label{iris2}
 \end{wrapfigure}
-\vspace{0.5cm}
-
-\par\noindent  In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one as discussed before. The experiment is of limited value as only few parameter combinations were tried.
-
-\par\noindent To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that all the input data can be used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
-
-\endgroup
 
 \par To some extent deciding what $k$ value to use parallels previous discussions about other parameters since there's a bias-variance tradeoff ; while larger $k$ values should provide a better estimate of the error they also suffer from higher variance as the result depends more on how representative the input data is. This becomes more important when the number of input data is small. Finally, $k$ shouldn't be too small (such that the training sets remain large enough), it should preferably be a divisor of $N$ (though this is not of primary importance) and if computational expense is an issue it cannot be large as many models would have to be generated.
 
 \par Automated tuning uses these validation methods in conjunction with a search procedure to find useful combinations of parameters. This search strategy has to deal with a non-convex problem and can be a simple grid search (performing validation for every combination of parameters specified by a grid partitioning the parameter space) or the Nelder-Mead method. The latter aims to find the minimum of a function without needing its derivative by considering a simplex which is updated iteratively until it wraps around the minimum. It tends to execute faster than grid search especially when the number of parameters is high, though to address this one could also consider a variant of grid search that starts with a grid of limited granularity until it finds a promising region in the parameter space on which grid search is performed again.
+
+\endgroup
 
 \par In the LS-SVM toolbox a technique called \textit{coupled simulated annealing} is used. This is a global optimisation technique which couples together several simulated annealing processes (inspired by coupled local minimisers' effectiveness compared to multi-start gradient descent optimisation). Its output is subsequently provided to either a grid search - or a Nelder-Mead algorithm. Results are the following :
 
@@ -117,7 +120,7 @@ Nelder-Mead & 85111.5137 $\pm$ 75855.5677 & 12.8189 $\pm$ 71.4858 & 0.0349 $\pm$
 \label{automatedtuning}
 \end{table}
 
-Simulated annealing is a stochastic process such that the parameters end up varying quite a bit. The costs do not since they are minimised. A histogram of the results gives a more complete picture and shows that there are a few outliers that made the average $\gamma$ and $\sigma^2$ large :
+Simulated annealing is a stochastic process such that the parameters end up varying quite a bit. The costs do not since they are minimised. A histogram of the results gives a more complete picture and shows that there are a few outliers that make the average $\gamma$ and $\sigma^2$ large :
 
 \begin{figure}[h]
 \centering
@@ -130,44 +133,51 @@ Simulated annealing is a stochastic process such that the parameters end up vary
 
 Results of the automated tuning process correspond to the contour plots given in figure \ref{validation}. As for the runtimes, the grid search ended up being twice as slow as the simplex method.
 
+%\begingroup
+%\setlength{\columnsep}{0.75cm}
+%\setlength{\intextsep}{0cm}
+%\begin{wrapfigure}{l}{0pt}
+%\centering
+%\includegraphics[width=0.45\textwidth]{../src/figures/iris/bayesian/bayesian_probabilities}
+%\caption{Posterior probability estimates using a Bayesian approach ($\gamma\approx0.038,\sigma^2\approx 0.56$). The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
+%\label{irisbayesian}
+%\end{wrapfigure}
+
+\begin{figure}[htp]
+\centering
+\subfloat[Random split validation.]{\includegraphics[width=0.33\textwidth]{../src/figures/iris/validation_1}}\hfil
+\subfloat[$k$-fold validation ($k=10$).]{\includegraphics[width=0.33\textwidth]{../src/figures/iris/validation_2}}\hfil
+\subfloat[Leave-one-out validation.]{\includegraphics[width=0.33\textwidth]{../src/figures/iris/validation_3}}\hfil
+\caption{Grid search in conjunction with various validation techniques. The results differ and the results for the random split strategy varies between runs. $k$-fold crossvalidation appears to be a better approximation of the error but may generalise less well. Reasonable parameters lie in the yellow zone where the error reaches a maximum of about 10\%. A small bandwidth of between say, 0.1 and 1.0 and a regularization constant of 1.0 seems reasonable.}
+\label{validation}
+\end{figure}
+
 \begingroup
 \setlength{\columnsep}{0.75cm}
-\setlength{\intextsep}{0cm}
+\setlength{\intextsep}{0.2cm}
 \begin{wrapfigure}{l}{0pt}
-\centering
-\includegraphics[width=0.4\textwidth]{../src/figures/iris/bayesian/bayesian_probabilities}
-\caption{Posterior probability estimates using a Bayesian approach ($\gamma\approx0.038,\sigma^2\approx 0.56$). The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
-\label{irisbayesian}
+	\centering
+       	 \includegraphics[width=0.45\textwidth]{../src/figures/iris/bayesian/bayesian_probabilities}
+        	\caption{Posterior probability estimates using a Bayesian approach ($\gamma\approx0.038,\sigma^2\approx 0.56$). The hue indicates the probability that the data point at a location in the 2-dimensional plane belongs to one or the other class. A smaller $\sigma^2$ can lead to overfitting and makes for a more clearly defined, smaller blue area.}
+	\label{irisbayesian}
 \end{wrapfigure}
 
-\vspace{0cm}
-
-An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the \textit{true positive rate (TPR)} is plotted in function of the \textit{false positive rate (FPR)}. The \textit{area under the curve (AUC)} can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ this happened to be 1 indicating a perfect classifier. One can note that if the \textit{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
+An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the true positive rate (TPR) is plotted in function of the false positive rate (FPR). The area under the curve (AUC) can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ it happens to equal 1 indicating a perfect classifier. One can note that if the \texttt{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
 
 \par Using a Bayesian approach which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot of these posterior probabilities for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.5 (equal probability of each class).
 
 \endgroup
 
-\begingroup
-\begin{wrapfigure}{r}{.4\textwidth}
-\begin{minipage}{\linewidth}
-    \centering\captionsetup[subfigure]{justification=centering}
-    \includegraphics[width=\linewidth]{../src/figures/iris/validation_1}
-    \caption*{(a) Random split validation.}
-    \label{fig:5a}\par\vfill
-    \includegraphics[width=\linewidth]{../src/figures/iris/validation_2}
-    \caption*{(b) $k$-fold validation ($k=10$).}
-    \label{fig:5b}
-    \includegraphics[width=\linewidth]{../src/figures/iris/validation_3}
-    \caption*{(c) Leave-one-out validation.}
-    \label{fig:5c}
-\end{minipage}
-\caption{Grid search in conjunction with various validation techniques. The results differ and the results for the random split strategy varies between runs. $k$-fold crossvalidation appears to be a better approximation of the error but may generalise less well. Reasonable parameters lie in the yellow zone where the error reaches a maximum of about 10\%. A small bandwidth of between say, 0.1 and 1.0 and a regularization constant of 1.0 seems reasonable.}
-\label{validation}
-\end{wrapfigure}
-sqjfsqld fsqdf kqdsfj qsldkfj dsql jfqsd jfqsdlj flqsdj lfqjsdflk sqjfl kqsj
-
-\endgroup
+%What's previously discussed can be used on some well-known datasets. These datasets are the Ripley -, Wisconsin breast cancer - and diabetes dataset respectively. They're visualised below and then tackled one by one.
+%
+%\begin{figure}[htp]
+%\centering
+%\subfloat[Ripley dataset.]{\includegraphics[width=0.33\textwidth]{../src/figures/classification/ripley}}\hfil
+%\subfloat[Wisconsin breast cancer dataset.]{\includegraphics[width=0.33\textwidth]{../src/figures/classification/wisconsin}}\hfil
+%\subfloat[Diabetes dataset.]{\includegraphics[width=0.33\textwidth]{../src/figures/classification/diabetes}}\hfil
+%\caption{Visualisation of three datasets : the Ripley, Wisconsin breast cancer - and diabetes dataset.}
+%\label{datasets_vis}
+%\end{figure}
 
 \fakesubsection{Ripley dataset}{}
 
