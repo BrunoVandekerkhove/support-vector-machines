@@ -33,7 +33,7 @@ for d = 1:4 % Degree
         fprintf('Degree %d, missclassification rate : %.2f\n', d, miss_rate)
         plotlssvm(parameters, {alpha,b});
         waitforbuttonpress
-        % export_pdf(gcf, sprintf('iris/%d_%d', d, gamma*10))
+        export_pdf(gcf, sprintf('iris/%d_%d', d, gamma*10))
     end
 end
 %% 1.3b LS-SVM classifier (RBF)
@@ -143,7 +143,7 @@ end
 fprintf('Average (gamma,sigma2,cost) = (%f,%f,%f)\n', mean(ggrid), mean(sgrid), mean(cgrid))
 fprintf('Std (gamma,sigma2,cost) = (%f,%f,%f)\n', std(ggrid), std(sgrid), std(cgrid))
 if display_runtime toc; end %#ok
-%% Histograms for automated tuning
+%% 1.3f Histograms for automated tuning
 histogram(ggrid, 10)
 export_pdf(gcf, 'iris/histogram_gamma')
 waitforbuttonpress
@@ -152,7 +152,7 @@ export_pdf(gcf, 'iris/histogram_sigma2')
 waitforbuttonpress
 histogram(cgrid, 10)
 export_pdf(gcf, 'iris/histogram_cost')
-%% 1.3f LS-SVM classifier (using ROC curves)
+%% 1.3g LS-SVM classifier (using ROC curves)
 load('data/iris')
 gamma = 0.037622;
 sigma = 0.559597;
@@ -161,7 +161,7 @@ parameters = {Xtrain, Ytrain, 'c', gamma, sigma, 'RBF_kernel'};
 [~, Ylatent] = simlssvm(parameters, {alpha, b}, Xtest);
 roc(Ylatent, Ytest);
 export_pdf(gcf, 'iris/roc')
-%% 1.3g LS-SVM classifier (Bayesian framework)
+%% 1.3h LS-SVM classifier (Bayesian framework)
 load('data/iris')
 % for i = 1:length(gsimp) % Requires 1.3e
 %     parameters = {Xtrain, Ytrain, 'c', gsimp(i), ssimp(i)};
@@ -176,7 +176,7 @@ parameters = {Xtrain, Ytrain, 'c', gamma, sigma, 'RBF_kernel'};
 bay_modoutClass(parameters, 'figure');
 colorbar
 export_pdf(gcf, 'iris/bayesian/bayesian_probabilities')
-%% 1.3h LS-SVM classifier (misc)
+%% 1.3i LS-SVM classifier (misc)
 % This visualises the classifiers for the gamma/sigma2 values found through
 % automated tuning.
 load('data/iris')
@@ -188,4 +188,15 @@ for i = 1:length(gsimp) % Requires 1.3e
     fprintf('Missclassification rate : %.2f\n', miss_rate)
     plotlssvm(parameters, {alpha,b});
     waitforbuttonpress
+end
+%% Functions
+function export_pdf(h, output_name)
+%EXPORT_PDF Exports the given figure to a pdf file.
+    set(h, 'PaperUnits','centimeters');
+    set(h, 'Units','centimeters');
+    pos=get(h,'Position');
+    set(h, 'PaperSize', [pos(3) pos(4)]);
+    set(h, 'PaperPositionMode', 'manual');
+    set(h, 'PaperPosition',[0 0 pos(3) pos(4)]);
+    print('-dpdf', strcat('figures/', output_name));
 end
