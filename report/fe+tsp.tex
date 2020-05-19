@@ -1,8 +1,8 @@
-\fakesection{Function Estimation and Time Series Prediction}{\hfill\small\texttt{/src/session\_2/.m}}
+\fakesection{Function Estimation and Time Series Prediction}{\hfill\small\texttt{/src/session\_2.m}, \texttt{/src/homework\_2.m}}
 
 \fakesubsection{Support vector machine for function estimation}{}
 
-Two datasets are experimented with in figure \ref{functionestimation}. The first exists of 20 points lying on a slope. Therefore one can expect the linear kernel (which generates a linear model) to outperform the others. The second (non-linear) dataset is more challenging such that other kernels which enable the SVM to model the non-linearities have to be used instead. 
+Two datasets are experimented with in figure \ref{functionestimation}. The first exists of 20 points lying on a slope. Therefore one can expect the linear kernel (which makes for a linear model) to outperform the others. The second (non-linear) dataset is more challenging such that other kernels which enable the SVM to model the non-linearities have to be used instead. 
 
 \par From the problem statement :
 $$\min_{w,b,\xi,\xi^*}\frac{1}{2}w\cdot w^T+C\cdot\sum_{k=1}^N\xi+\xi^*$$
@@ -29,7 +29,7 @@ where $\xi,\xi^*$ are slack variables representing deviation from the so-called 
 
 \fakesubsection{A simple example: the sinc function}{}
 
-Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for $\sigma^2=1.0,\gamma=10^6$. The smaller $\sigma^2$ value (0.01) leads to overfitting. In this case the underlying function is known and it seems reasonable to take $\sigma\in\{0.1,1.0\}$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends strongly on the training set and even for a given training set there's no unique parameter combination that works best.
+Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for $\sigma^2=1.0,\gamma=10^6$. The smaller $\sigma^2$ value (0.01) leads to overfitting (the noise is being modelled). In this case the underlying function is known and it seems reasonable to take $\sigma\in\{0.1,1.0\}$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends on the training set that is being deal with and even for a given training set there's no unique parameter combination that works best.
 
 \par Results of automated tuning are shown hereunder :
 
@@ -98,12 +98,14 @@ One nice facet of this approach is that one ends up with error bars indicating u
 
 \fakesubsection{Automatic Relevance Determination}{}
 
-By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification (a form of dimensionality reduction). In the case of an RBF kernel by using a (preferably diagonal) matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. For the toy dataset the algorithm found the $x_1$ to be the sole relevant one which is also illustrated in figure \ref{ardsinc}. An other, crude way of doing relevance determination can be done by considering all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset performs best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$).
+By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification (a form of dimensionality reduction). In the case of an RBF kernel by using a (preferably diagonal) matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. For the toy dataset the algorithm found the $x_1$ to be the sole relevant one which is also illustrated in figure \ref{ardsinc}. An other, crude way of doing relevance determination is to consider all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset generalises best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$).
 
 \fakesubsection{Robust regression}{}
 
-Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit due to the use of the least squares loss, which penalises outliers more than the \textit{mean absolute error} does (such that there is more perturbation). If the noise on the data set is Gaussian then the least squares loss is appropriate, but in general the distribution of the noise is not known and in the case of the toy dataset dealt with here the noise isn't normally distributed. The idea, then, is to find an LS-SVM model as per usual and apply methods from robust statistics on the resulting parameters. Specificially, a weight is assigned to each data point based on its error. Some possible weight functions are the following :
-\vspace{0.2cm}
+Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit due to the use of the least squares loss, which penalises outliers more than the \textit{mean absolute error} does (such that there is more perturbation). If the noise on the data set is Gaussian then the least squares loss is appropriate, but in general the distribution of the noise is not known and in the case of the toy dataset dealt with here the noise isn't normally distributed. The idea, then, is to find an LS-SVM model as per usual and apply methods from robust statistics on the resulting parameters. Specificially, a weight is assigned to each data point based on its error. Some possible weight functions are shown below. 
+
+\par After assigning the weights a weighted LS-SVM is trained and this process may be repeated as desired. Results with 4 weight functions are compared with a non-robust LS-SDM approach in figure \ref{robustsinc}.
+\vspace{0.4cm}
 \begin{table}[h]
 \centering
 \begin{tabular}{c|cccc}
@@ -114,8 +116,6 @@ Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Ou
 \caption{Possible weight functions for use in robust regression with LS-SVMs.}
 \label{roburegwf}
 \end{table}
-\vspace{0.2cm}
-After assigning the weights a weighted LS-SVM is trained and this process may be repeated as desired. Results with 4 weight functions are compared with a non-robust LS-SDM approach in figure \ref{robustsinc}.
 
 \begin{figure}[h]
 \centering
