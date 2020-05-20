@@ -43,7 +43,7 @@ A dual form can be expressed by making use of Lagrange multipliers which in this
 
 \par\noindent For the given toy dataset it can readily be seen in figure \ref{stanfordexample} (top row) that for a decreasing value of $C$ the margin does become larger and that less \textit{`slacking'} is allowed for. By adding data points close to the boundary or at the \textit{`wrong'} side of it the margin usually changes a lot and the new data points nearly always become support vectors.
 
-The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For $\sigma^2$ small enough any two classes get separated in a very strict way - the Gaussian kernels are universal. For very large bandwidths the reach of each data point becomes large and the decision boundary become near-linear in this particular case\footnote{When the demo is run on a 4-point dataset representing the \texttt{XOR} function a checkerboard pattern is obtained when $\sigma^2$ is large (as seen in figure \ref{stanfordexample}, last row).} as the density areas of each class end up competing. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma^2$ is large a bigger value of $C$ can make the model more complex again. 
+The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality of each data point. As it increases the feature space mapping becomes smoother, producing simpler decision boundaries (figure \ref{stanfordexample}, third row). This relates to the bias-variance tradeoff. For $\sigma^2$ small enough any two classes get separated in a very strict way - the Gaussian kernels are universal. For very large bandwidths the reach of each data point becomes large and the decision boundary become near-linear as the density areas of each class end up competing and the problem reduces to something similar to what's seen in the introductory example\footnote{When the demo is run on a 4-point dataset representing the \texttt{XOR} function a checkerboard pattern is obtained when $\sigma^2$ is large (as seen in figure \ref{stanfordexample}, last row). Even when $\sigma^2$ is low the separation is linear in between the data points as the problem reduces to that seen in the introductory example.}. As for $C$, it works the same as before, prioritising either larger margins or lower misclassification rates. When $\sigma^2$ is large a bigger value of $C$ can make the model more complex again. 
 
 \par\noindent The RBF kernel approach can generate models having misclassification rates that are lower than the classic linear kernel approach does as decision boundaries that are nonlinear in the input space can be learned. It also tends to use more data points as support vectors. This makes the model less compact (computationally efficient) and if the data is linearly separable it is unnecessary. Deciding whether the model generalises better can be done through evaluation on a test set.
 
@@ -86,7 +86,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \label{iris}
 \end{figure}
 
-\par In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one as discussed before. The experiment is of limited value as only few parameter combinations were tried.
+\par In the case of RBF kernels one can see in figure \ref{iris2} that for a $\gamma$ value of 1 any $\sigma^2$ between 0.1 and 1 performs well. The same interval works for $\gamma$ when $\sigma^2=1$. This corresponds to the results of the provided sample script where the base used in the semilog plot happens to be the natural logarithm (instead of using base 10). For large $\sigma$ values (say, 25) one class may overtake the other one. The experiment is of limited value as only few parameter combinations were tried.
 
 \par To properly find good parameter values a more systematic approach is in order. The idea is to search through the parameter space and evaluate the results on a validation set rather than on the test set (which should be used for nothing but the evaluation of the finished model). A validation set can be constructed in a few ways the results of which are illustrated in figure \ref{validation}, where error estimates in the parameter space are shown. Random splitting i.e. splitting the input data randomly in a training - and a validation set is a way that isn't particularly robust. An improvement upon it is $k$-fold validation where the input data is randomly split into $k$ folds which are considered as a validation set in turn such that all the input data can be used for parameter tuning. When $k=N$ with $N$ the number of input samples this is called leave-one-out cross-validation. 
 
@@ -181,8 +181,47 @@ An ROC curve can be generated for any model. One calculates the result of the mo
 
 \fakesubsection{Ripley dataset}{}
 
+\begin{figure}[htp]
+\centering
+\subfloat[Ripley dataset.]{\includegraphics[width=0.32\textwidth]{../src/figures/classification/ripley}}\hfil
+\subfloat[Results with a linear kernel (tuned parameter $\gamma\approx 0.0027$, misclassification rate of $10.2\%$, AUC $\approx 0.956$).]{\includegraphics[width=0.32\textwidth]{../src/figures/classification/ripley_lin_kernel}}\hfil
+\subfloat[Results with an RBF kernel (tuned parameters $\gamma\approx 0.537,\sigma^2\approx 0.338$, misclassification rate of $9.1\%$, AUC $\approx 0.968$).]{\includegraphics[width=0.32\textwidth]{../src/figures/classification/ripley_RBF_kernel}}\hfil
+\caption{The Ripley dataset and results with a linear and an RBF kernel. LSSVMs are used. The number of support vectors equals 250 (100\%) in all cases.}
+\label{ripley}
+\end{figure}
+
+The Ripley dataset is a 2-dimensional so it can easily be visualised (figure \ref{ripley}). The data for each class is generated by a mixture of two Gaussian distributions and it is not linearly separable in the input space. The distributions were chosen as to \textit{`allow a best-possible error rate of about 8\%'}, each component has the same covariance matrix (basically a 2-component version of the introductory example). The data is a \textit{`realistic'} toy problem and it is rather noisy.
+
+\par An LS-SVM with a linear kernel makes for a classification rate of around 10\% while an RBF kernel performs a tad better at a rate of about 9\% (and so does a polynomial one\footnote{Automated tuning of the polynomial usually resulted in a degree $\delta$ between 4 and 7.}). The ROC curves give a more complete picture and aren't shown here, but the AUC was the highest for the RBF kernel (about 0.97) with accuracy being the highest at a threshold a bit below zero. In practice (when met with real-life datasets) other operating points may be chosen depending on the cost of each type of misclassification.
+
+\par Steve Gunn's \texttt{MATLAB} toolbox which is also used for regression in the second part of the report provides functions for generating classical SVMs and some more kernels that can be experimented with though it provides no automated tuning method for these. The results for linear -, RBF and polynomial kernels are about the same though there are less support vectors. Results after manual tuning (through the \texttt{uiclass} interface) are shown in figure \ref{ripleysvm}.
+
+\begin{figure}[htp]
+\centering
+\subfloat[Linear kernel ($\gamma=1.0,\rho=11.5\%$, 125 support vectors)).]{\includegraphics[width=0.28\textwidth]{../src/figures/classification/ripley_svm_linear}}\hfil
+\subfloat[Polynomial kernel ($\delta=5,\gamma=1.0,\rho=10.0\%$, 77 support vectors)).]{\includegraphics[width=0.28\textwidth]{../src/figures/classification/ripley_svm_poly}}\hfil
+\subfloat[RBF kernel ($\gamma=0.5,\sigma^2=0.15,\rho=9.2\%$, 124 support vectors).]{\includegraphics[width=0.28\textwidth]{../src/figures/classification/ripley_svm_rbf}}\hfil
+\caption{The Ripley dataset and results with a linear and an RBF kernel. LSSVMs are used.}
+\label{ripleysvm}
+\end{figure}
+
+Since the dataset is Gaussian an RBF kernel should be an appropriate pick. It's also a noisy dataset so a smoother decision surface (higher $\sigma^2$ and/or lower $\gamma$) should be opted for. The other kernels may be more appropriate in other contexts. Of course in this case the optimal classifier (in terms of maximisation of the posterior probabilities) can be defined based on Bayes' theorem.
+
 \fakesubsection{Wisconsin breast cancer dataset}{}
 
 \fakesubsection{Diabetes dataset}{}
 
+% and an overview of the 3 new kernels that were tried are given here :
+%
+%\begin{table}[h]
+%\centering
+%\begin{tabular}{c|cp{0.65\textwidth}}
+%\textit{Kernel} & \textit{Parameters} & \textit{Description} \\\hline
+%\textit{Sigmoid} & $\alpha$ (scale) and $c$ (offset) & A multilayer perceptron kernel $k(x,y)=tanh(\alpha\cdot x^T\cdot y+c)$ equivalent to using a 2-layer perceptron. \\
+%\textit{Spline} & parameter & aaa \\
+%\textit{B-spline} & parameter & aaa \\
+%\end{tabular}
+%\label{misckernels}
+%\caption{Miscellaneous kernels experimented with for the Ripley dataset.}
+%\end{table}
 
