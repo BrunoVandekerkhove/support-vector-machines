@@ -29,7 +29,7 @@ where $\xi,\xi^*$ are slack variables representing deviation from the so-called 
 
 \fakesubsection{A simple example: the sinc function}{}
 
-Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for $\sigma^2=1.0,\gamma=10^6$. The smaller $\sigma^2$ value (0.01) leads to overfitting (the noise is being modelled). In this case the underlying function is known and it seems reasonable to take $\sigma\in\{0.1,1.0\}$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends on the training set that is being deal with and even for a given training set there's no unique parameter combination that works best.
+Figure \ref{sincestimate} shows the results of LS-SVM regression applied on the \texttt{sinc} function. The mean squared error is lowest for $\sigma^2=1.0,\gamma=10^6$. The smaller $\sigma^2$ value (0.01) leads to overfitting (the noise is being modelled). In this case the underlying function is known and it seems reasonable to take $\sigma\in[0.1,1.0]$ and, say, $\gamma=10^3$. However, an optimal parameter cannot be found as it depends on the training set that is being deal with and even for a given training set there's no unique parameter combination that works best.
 
 \par Results of automated tuning are shown hereunder :
 
