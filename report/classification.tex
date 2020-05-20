@@ -49,7 +49,7 @@ The $\sigma^2$ hyperparameter in the case of an RBF kernel controls the locality
 
 \fakesubsection{Least-squares support vector machine classifier}{}
 
-Figure \ref{iris} depicts results with various polynomial kernels where $t=1$. This $t$ is called the \textit{constant} and it controls the importance of higher - versus lower-order terms in the polynomial as can be deduced from the application of the binomial theorem to the definition of the kernel :
+Figure \ref{iris} depicts results on the iris dataset using various polynomial kernels with $t=1$. This $t$ is called the \textit{constant} and it controls the importance of higher - versus lower-order terms in the polynomial as can be deduced from the application of the binomial theorem to the definition of the kernel :
 $$(x^T\cdot y+\tau)^d=\sum_{i=0}^d\binom{d}{i}(x^T\cdot y)^{d-i}\cdot \tau^i$$
 The effect of $t$ is not very noticeable for small values of $d$ while for the higher degrees it tends to make the decision boundary more complex.
 
