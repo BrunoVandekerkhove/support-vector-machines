@@ -38,7 +38,7 @@ for d = 1:4 % Degree
 end
 %% 1.3b LS-SVM classifier (RBF)
 load('data/iris')
-samples = 10.^(-3:0.05:3)
+samples = 10.^(-3:0.05:3);
 N = length(samples); % Number of values to test
 % Prepare figure
 figure
