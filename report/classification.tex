@@ -168,7 +168,6 @@ An ROC curve can be generated for any model. One calculates the result of the mo
 
 \endgroup
 
-%What's previously discussed can be used on some well-known datasets. These datasets are the Ripley -, Wisconsin breast cancer - and diabetes dataset respectively. They're visualised below and then tackled one by one.
 %
 %\begin{figure}[htp]
 %\centering
@@ -205,9 +204,11 @@ The Ripley dataset is a 2-dimensional so it can easily be visualised (figure \re
 \label{ripleysvm}
 \end{figure}
 
-Since the dataset is Gaussian an RBF kernel should be an appropriate pick. It's also a noisy dataset so a smoother decision surface (higher $\sigma^2$ and/or lower $\gamma$) should be opted for. The other kernels may be more appropriate in other contexts. Of course in this case the optimal classifier (in terms of maximisation of the posterior probabilities) can be defined based on Bayes' theorem.
+Since the dataset is Gaussian an RBF kernel should be an appropriate pick. As it's also a noisy dataset a smoother decision surface (higher $\sigma^2$ and/or lower $\gamma$) should be opted for. Of course in this case the optimal classifier (in terms of maximisation of the posterior probabilities) can be defined based on Bayes' theorem.
 
 \fakesubsection{Wisconsin breast cancer dataset}{}
+
+With 30 features for each of the observations in the dataset the Wisconsin breast cancer isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction or with weights in the SVM formulation. 
 
 \fakesubsection{Diabetes dataset}{}
 
