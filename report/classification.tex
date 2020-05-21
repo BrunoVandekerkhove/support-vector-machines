@@ -162,9 +162,9 @@ Results of the automated tuning process correspond to the contour plots given in
 	\label{irisbayesian}
 \end{wrapfigure}
 
-An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the true positive rate (TPR) is plotted in function of the false positive rate (FPR). The area under the curve (AUC) can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ it happens to equal 1 indicating a perfect classifier. One can note that if the \texttt{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
+An ROC curve can be generated for any model. One calculates the result of the model applied on every test data point and uses the results as thresholds for which the true positive rate (TPR) is plotted in function of the false positive rate (FPR). The area under the curve (AUC) can then be used to gauge the effectiveness of the classifier. For $\gamma=0.037622,\sigma^2=0.559597$ it happens to equal 1 indicating a perfect classifier. If the \texttt{sign} function had been used to classify test data there would be a misclassification error (the FPR would be 0.1).
 
-\par Using a Bayesian approach which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot of these posterior probabilities for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.5 (equal probability of each class).
+\par Using a Bayesian approach (considered in greater detail in the second part of this report) which requires a prior denoting the probability of occurrence of each class it is possible (by applying Bayes' theorem) to estimate the probability that a given data point belongs to the positive or the negative class. A corresponding plot of these posterior probabilities for the same model used to calculate the ROC curve is shown in figure \ref{irisbayesian}. The prior is taken to be 0.67 (the classes are unbalanced).
 
 \endgroup
 
@@ -208,7 +208,22 @@ Since the dataset is Gaussian an RBF kernel should be an appropriate pick. As it
 
 \fakesubsection{Wisconsin breast cancer dataset}{}
 
-With 30 features for each of the observations in the dataset the Wisconsin breast cancer isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction or with weights in the SVM formulation. 
+With 30 features for each of the observations the Wisconsin breast cancer diagnosis dataset isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. Distributions of some of the features are shown below. The two classes denote benign - or malignant cancer tissue. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction\footnote{Whilst doing so it came to my attention that the \texttt{roc} function in the LS-SVM toolbox seems to return the thresholds in the wrong (reverse) order.} or by using weights in the SVM formulation to give more emphasis to the terms associated to the minority class. 
+
+\vspace{-0.5cm}
+\begin{figure}[htp]
+\centering
+\subfloat[Mean radius.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_1}}\hfil
+\subfloat[Mean texture.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_2}}\hfil
+\subfloat[Mean perimeter.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_3}}\hfil
+\subfloat[Mean area.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_4}}\hfil
+\caption{Distributions of the first 4 features of the Wisconsin breast cancer dataset (red denotes malignant -, blue denotes benign tumors). There are 10 features in total and for each of these the mean, standard error and maximum value is given.}
+\label{breasthist}
+\end{figure}
+
+\par A simple automated tuning experiment of an LS-SVM with linear -, polynomial - and RBF kernels yielded average AUCs of $0.996\pm 0.001$, $0.937\pm 0.058$ and $0.995\pm 0.002$ respectively. It may be surprising that a linear kernel outperformed a non-linear one - the number of features is larger and there's not that many data points so a simpler decision boundary may help to avoid overfitting since Cover's theorem implies that it is more likely that the data is linearly separable when the number of dimensions is high (and the number of data points is low).
+
+\par As some of the features seem less informative than others (the mean area for example) it may be worthwhile to remove some of the noise either through PCA or a more sophisticated approach like automatic relevance determination.
 
 \fakesubsection{Diabetes dataset}{}
 
