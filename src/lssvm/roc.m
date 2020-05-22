@@ -153,7 +153,7 @@ NP=sum(CLASS==1);
 [RESULT_S,I]=sort(RESULT);
 CLASS_S=CLASS(I);
 
-TH=RESULT_S(NRSAM)
+TH=RESULT_S(NRSAM);
 SAMNR=NRSAM;
 TP=0;  TPa = [];
 FP=0;  FPa = [];
@@ -184,7 +184,7 @@ while ~isempty(TH)
    FP=FP+DFP;
    TP=TP+DTP;
    FN=FN-DTP;
-   TPR=TP/(TP+FN)
+   TPR=TP/(TP+FN);
    FPR=FP/(FP+TN);
    
    SAMNR=max(find(RESULT_S<TH));
