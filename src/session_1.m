@@ -173,7 +173,7 @@ load('data/iris')
 gamma = 0.037622;
 sigma = 0.559597;
 parameters = {Xtrain, Ytrain, 'c', gamma, sigma, 'RBF_kernel'};
-bay_modoutClass(parameters, 'figure');
+bay_modoutClass(parameters, 'figure', 0.67); % unbalanced class
 colorbar
 export_pdf(gcf, 'iris/bayesian/bayesian_probabilities')
 %% 1.3i LS-SVM classifier (misc)
