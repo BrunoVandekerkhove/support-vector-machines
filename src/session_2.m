@@ -88,9 +88,9 @@ export_pdf(gcf, 'estimation/bayesian_inference')
 %% 2.3 Automatic Relevance Determination
 X = 6 .* rand(100, 3) - 3;
 Y = sinc(X(:,1)) + 0.1 .* randn(100,1); % Only the first column is not random
-sigma = 0.1; % Choose parameters wisely to prevent it from modelling noise
+sigma = 0.1;
 gamma = 10;
-%[selected, ranking] = bay_lssvmARD({X, Y, 'f', gamma, sigma}) %#ok
+[selected, ranking] = bay_lssvmARD({X, Y, 'f', gamma, sigma}) %#ok
 subsets = (dec2bin(1:2^3-1) - '0')';
 costs = [];
 for set = subsets
