@@ -70,38 +70,111 @@ for kernel = ["sigmoid", "spline", "bspline","linear", "poly", "rbf"]%, "fourier
     %export_pdf(gcf, sprintf('classification/ripley_svm_%s', kernel))
     waitforbuttonpress;
 end
-%% 2.2 Breast Cancer dataset
+%% 2.2a Breast Cancer dataset (visualization)
 load('breast')
 Xtrain = trainset;
 Ytrain = labels_train;
 Xtest = testset;
 Ytest = labels_test;
-%visualise(trainset, labels_train, 1)
+visualise(trainset, labels_train, 1);
 %export_pdf(gcf, 'classification/wisconsin')
+%% 2.2b Breast Cancer dataset (basic data analysis)
+for i = 1:4
+   figure
+   hold on
+   histogram(Xtrain(Ytrain == 1, i*3-2))
+   histogram(Xtrain(Ytrain == -1, i*3-2))
+   %legend('Benign', 'Malignant')
+   hold off
+   %export_pdf(gcf, sprintf('classification/breast_hist_%d', i));
+end
+close all;
+%% 2.2c Breast Cancer dataset (LS-SVM)
 for kernel = ["lin_kernel", "poly_kernel", "RBF_kernel"]
-    % Tuning
-    tune_params = {Xtrain, Ytrain, 'c', 0.1, [], kernel};
-    if kernel == "poly_kernel"
-        [gam,tau,degree,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
-        fprintf('Tuning results (g,t,d,c) = (%.3f,%.3f,%.3f,%.3f)\n', gam, tau, degree, cost)
-        parameters = {Xtrain, Ytrain, 'c', gam, [tau,degree], kernel};
-    else
+    aucs = [];
+    for i = 1:10
+        % Tuning
+        tune_params = {Xtrain, Ytrain, 'c', 0.1, [], kernel};
+        if kernel == "poly_kernel"
+            [gam,params,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
+            fprintf('Tuning results (g,t,d,c) = (%.3f,%.3f,%.3f,%.3f)\n', gam, params(1), params(2), cost)
+            parameters = {Xtrain, Ytrain, 'c', gam, params, kernel};
+        else
+            [gam,sig2,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
+            fprintf('Tuning results (g,s,c) = (%.3f,%.3f,%.3f)\n', gam, sig2, cost)
+            parameters = {Xtrain, Ytrain, 'c', gam, sig2, kernel};
+        end
+        % Training
+        %parameters = {Xtrain, Ytrain, 'c', gam, sig2, kernel};
+        [alpha,b] = trainlssvm(parameters);
+        fprintf('Number of support vectors = %d\n', length(alpha));
+        % Testing
+        [test_classes, Ylatent] = simlssvm(parameters, {alpha,b}, Xtest);
+        miss_rate = sum(test_classes ~= Ytest) / length(Ytest);
+        fprintf('Missclassification rate : %.5f\n', miss_rate)
+        % ROC
+        [auc,~,thresholds,fpr,tpr] = roc(Ylatent, Ytest);
+        %export_pdf(gcf, sprintf('classification/ripley_roc_%s', kernel))
+        fprintf('ROC_AUC : %.5f\n', auc)
+        aucs = [auc aucs]; %#ok
+    end   
+    fprintf('Mean AUC for kernel %s = %.3f (std = %.3f)', kernel, mean(aucs), std(aucs));
+end
+%% 2.2d Breast Cancer dataset (ARD)
+%tune_params = {Xtrain, Ytrain, 'c', 0.1, [], 'RBF_kernel'};
+%[gam,sig2,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
+%fprintf('Tuning results (g,s,c) = (%.3f,%.3f,%.3f)\n', gam, sig2, cost)
+%[selected, ranking] = bay_lssvmARD({Xtrain, Ytrain, 'c', gam, sig2}) %#ok
+%save('breast_ard', 'selected', 'ranking') % save intermediate results
+load('breast_ard') % load intermediate results
+% Train with relevant inputs
+Xard = Xtrain(:,selected); % relevant inputs of training set
+Xtard = Xtest(:,selected); % relevant inputs of test set
+aucs = [];
+costs = [];
+for i = 1:10
+    tune_params = {Xard, Ytrain, 'c', 0.1, [], 'lin_kernel'};
+    [gam,sig2,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
+    fprintf('Tuning results (g,s,c) = (%.3f,%.3f,%.3f)\n', gam, sig2, cost)
+    parameters = {Xard, Ytrain, 'c', gam, sig2, 'lin_kernel'};
+    [alpha,b] = trainlssvm(parameters);
+    [test_classes, Ylatent] = simlssvm(parameters, {alpha,b}, Xtard);
+    miss_rate = sum(test_classes ~= Ytest) / length(Ytest);
+    fprintf('Missclassification rate : %.5f\n', miss_rate);
+    [auc] = roc(Ylatent, Ytest);
+    fprintf('AUC = %.5f\n', auc);
+    aucs = [aucs auc] %#ok
+    costs = [costs cost] %#ok
+end
+fprintf('Mean AUC / cost = %.5f (%.5f) %.5f (%.5f)', mean(aucs), std(aucs), mean(costs), std(costs))
+%% 2.2e Breast Cancer dataset (PCA)
+mean_train = mean(Xtrain);
+[~,eigvec] = pca(Xtrain-mean_train, 20);
+for n_h = [3,10,20]
+    % do pca
+    proj = eigvec(:,1:n_h);
+    % project train/test data
+    train_proj = (Xtrain - mean_train) * proj;
+    test_proj = (Xtest - mean_train) * proj;
+    costs = [];
+    aucs = [];
+    % tune/train on training data
+    for i = 1:10
+       tune_params = {train_proj, Ytrain, 'c', 0.1, [], 'RBF_kernel'};
         [gam,sig2,cost] = tunelssvm(tune_params, 'simplex', 'crossvalidatelssvm', {10, 'misclass'});
         fprintf('Tuning results (g,s,c) = (%.3f,%.3f,%.3f)\n', gam, sig2, cost)
-        parameters = {Xtrain, Ytrain, 'c', gam, sig2, kernel};
+        parameters = {train_proj, Ytrain, 'c', gam, sig2, 'RBF_kernel'};
+        [alpha,b] = trainlssvm(parameters);
+        [test_classes, Ylatent] = simlssvm(parameters, {alpha,b}, test_proj);
+        miss_rate = sum(test_classes ~= Ytest) / length(Ytest);
+        fprintf('Missclassification rate : %.5f\n', miss_rate);
+        [auc] = roc(Ylatent, Ytest);
+        fprintf('AUC = %.5f\n', auc);
+        aucs = [aucs auc] %#ok
+        costs = [costs cost] %#ok 
     end
-    % Training
-    %parameters = {Xtrain, Ytrain, 'c', gam, sig2, kernel};
-    [alpha,b] = trainlssvm(parameters);
-    fprintf('Number of support vectors = %d\n', length(alpha));
-    % Testing
-    [test_classes, Ylatent] = simlssvm(parameters, {alpha,b}, Xtest);
-    miss_rate = sum(test_classes ~= Ytest) / length(Ytest);
-    fprintf('Missclassification rate : %.5f\n', miss_rate)
-    % ROC
-    [auc,~,thresholds,fpr,tpr] = roc(Ylatent, Ytest);
-    %export_pdf(gcf, sprintf('classification/ripley_roc_%s', kernel))
-    fprintf('ROC_AUC : %.5f\n', auc)
+    close all
+    fprintf('Mean AUC / cost = %.5f (%.5f) %.5f (%.5f)', mean(aucs), std(aucs), mean(costs), std(costs))
 end
 %% 2.3 Diabetes dataset
 load('diabetes')
@@ -115,7 +188,6 @@ function visualise(X, y, use_pca)
         if use_pca
             [~, score] = pca(X.');
             X = score(:, 1:2);
-            size(X)
         else
             X = tsne(X);
         end
