@@ -147,7 +147,16 @@ The provided model for predicting measurements for the logmap dataset performs q
 
 \par A straightforward way of picking a so-called order of a time series model (i.e. the number of past measurements taken into account for prediction of the next measurement) is to take advantage of the fact that the given dataset is rather small and the order is a discrete variable. This makes it sensible to go over all possible orders and tune regularisation parameter $\gamma$ and any of the kernel parameters for every possible order separately.
 
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{../src/figures/logmap/mse}
+\caption{\texttt{mse} of just one tuned model per possible order. A minimum of 0.0408 was obtained for \texttt{order} = 23. The experiment was repeated thrice. When doing the same experiment where the \texttt{mse} was measured for the test set the results weren't nearly the same. Minimum errors were found for orders $\in[2,8]$.}
+\label{logmapord}
+\end{figure}
 
+\par Figure \ref{logmapord} shows the mean squared errors in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the test set. The validation set gave a different story where the error remained stable up until an order of about 8.
+
+%It can be noted that the automatic tuning of parameters does not take the simplicity into account, only the error on the validation set. This may lead to rather complex models and poor generalisation performance.
 
 \fakesubsection{Santa Fe dataset}{}
 
