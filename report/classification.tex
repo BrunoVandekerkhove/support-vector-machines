@@ -226,11 +226,14 @@ With 30 features for each of the observations the Wisconsin breast cancer diagno
 \par As some of the features seem less informative than others it may be worthwhile to remove some of them either through PCA or a more sophisticated approach like automatic relevance determination. A basic experiment ended up with the latter selecting 21 features. Training the model on these resulted in an AUC of 0.9973. The results with a larger number of tuning and training runs as well as a comparison with a basic PCA approach are shown in table \ref{breasttab}.
 
 \begin{table}
-\begin{tabular}
-
+\centering
+\begin{tabular}{c|ccccc}
+& ARD (RBF kernel) & PCA ($n_h=2$) & PCA ($n_h=3$) & PCA ($n_h=10$)\\\hline
+Cost & $2.075\% \pm 0.206$ & $6.125\% \pm 0.339$ & $3.825\% \pm 0.237$ & $3.750\% \pm 0.167$\\
+AUC & $0.99723 \pm 0.00040$ & $0.98402 \pm 0.00335$ & $0.99077 \pm 0.00238$ & $0.98729 \pm 0.00520$
 \end{tabular}
+\caption{Mean and standard deviation of accuracy and AUC for linear kernel models after application of two types of dimensionality reduction ; PCA or automatic relevance determination (which selected 21 features). PCA was applied by subtracting the mean, applying PCA on the training set and using the resulting projection on both the training - and test set after which an LS-SVM with an RBF kernel was tuned and trained. A linear kernel wasn't as performant as the number of dimensions decreased.}
 \label{breasttab}
-\caption{Mean and standard deviation of accuracy and AUC for linear kernel models after application of PCA or automatic relevance determination (which selected 21 features).}
 \end{table}
 
 \fakesubsection{Diabetes dataset}{}
