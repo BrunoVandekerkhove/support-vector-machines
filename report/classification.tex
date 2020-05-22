@@ -208,7 +208,7 @@ Since the dataset is Gaussian an RBF kernel should be an appropriate pick. As it
 
 \fakesubsection{Wisconsin breast cancer dataset}{}
 
-With 30 features for each of the observations the Wisconsin breast cancer diagnosis dataset isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. Distributions of some of the features are shown below. The two classes denote benign - or malignant cancer tissue. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction\footnote{Whilst doing so it came to my attention that the \texttt{roc} function in the LS-SVM toolbox \textit{seems} to return the thresholds in the wrong (reverse) order.} or by using weights in the SVM formulation to give more emphasis to the terms associated to the minority class. 
+With 30 features for each of the observations the Wisconsin breast cancer diagnosis dataset isn't trivial to visualise. \texttt{MATLAB} has an implementation of \textit{t}-SNE or two principal components determined through PCA could be plotted (see figure \ref{homeviz}). Distributions of some of the features are shown below. The two classes denote benign - or malignant cancer tissue. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction\footnote{Whilst doing so it came to my attention that the \texttt{roc} function in the LS-SVM toolbox \textit{seems} to return the thresholds in the wrong (reverse) order.} or by using weights in the SVM formulation to give more emphasis to the terms associated to the minority class. 
 
 \vspace{-0.5cm}
 \begin{figure}[htp]
@@ -236,7 +236,19 @@ AUC & $0.99723 \pm 0.00040$ & $0.98402 \pm 0.00335$ & $0.99077 \pm 0.00238$ & $0
 \label{breasttab}
 \end{table}
 
+\begin{figure}[htp]
+\centering
+\subfloat[Breast cancer diagnosis $\qquad$ dataset (\textit{t}-SNE).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/wisconsin}}\hfil
+\subfloat[Breast cancer diagnosis $\qquad$ dataset (PCA).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/wisconsin_pca}}\hfil
+\subfloat[Diabetes dataset (\textit{t}-SNE).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/diabetes}}\hfil
+\subfloat[Diabetes dataset (PCA).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/diabetes_pca}}\hfil
+\caption{Visualisation of the Wisoncin breast cancer - and the Pima indians diabetes datasets give an idea of how separable they are. The diabetes dataset appears significantly harder and this is reflectedi n the lower accuracy obtained with various models.}
+\label{homeviz}
+\end{figure}
+
 \fakesubsection{Diabetes dataset}{}
+
+A basic 2-dimensional of the 8-dimensional Pima indians dataset reveals it to be more difficult than the previous one. A non-linear kernel is likely to outperform the linear one and indeed a mean accuracy of XXX, XXX and XXX were obtained with a linear, polynomial and RBF kernel (averaged over 10 runs using tuned parameters).
 
 % and an overview of the 3 new kernels that were tried are given here :
 %
