@@ -4,7 +4,7 @@
 \setlength{\columnsep}{0.5cm}
 \setlength{\intextsep}{0.5cm}
 \begin{wrapfigure}{r}{0pt}
-\includegraphics[width=0.45\textwidth]{../src/figures/twogaussians.pdf}
+\includegraphics[width=0.5\textwidth]{../src/figures/twogaussians.pdf}
 \caption{Decision boundary (in orange) for two Gaussian distributions with equal covariance matrices.}
 \label{twogaussians}
 \end{wrapfigure}
@@ -100,7 +100,7 @@ The effect of $t$ is not very noticeable for small values of $d$ while for the h
 \label{iris2}
 \end{wrapfigure}
 
-\par To some extent deciding what $k$ value to use parallels previous discussions about other parameters since there's a bias-variance tradeoff ; while larger $k$ values should provide a better estimate of the error they also suffer from higher variance as the result depends more on how representative the input data is. This becomes more important when the number of input data is small. Finally, $k$ shouldn't be too small (such that the training sets remain large enough), it should preferably be a divisor of $N$ (though this is not of primary importance) and if computational expense is an issue it cannot be large as many models would have to be generated.
+\par To some extent deciding what $k$ value to use parallels previous discussions about other parameters since there's a bias-variance tradeoff ; while larger $k$ values should provide a better estimate of the error they also suffer from higher variance as the result depends more on how representative the input data is. This becomes more important when the number of input data is small. Finally, $k$ shouldn't be too small (such that the training sets remain large enough), it should preferably be a divisor of $N$ (though this is not of primary importance) and if computational expense is an issue it cannot be large as many models would have to be generated (which admittedly can be addressed).
 
 \par Automated tuning uses these validation methods in conjunction with a search procedure to find useful combinations of parameters. This search strategy has to deal with a non-convex problem and can be a simple grid search (performing validation for every combination of parameters specified by a grid partitioning the parameter space) or the Nelder-Mead method. The latter aims to find the minimum of a function without needing its derivative by considering a simplex which is updated iteratively until it wraps around the minimum. It tends to execute faster than grid search especially when the number of parameters is high, though to address this one could also consider a variant of grid search that starts with a grid of limited granularity until it finds a promising region in the parameter space on which grid search is performed again.
 
@@ -229,7 +229,7 @@ With 30 features for each of the observations the Wisconsin breast cancer diagno
 \centering
 \begin{tabular}{c|ccccc}
 & ARD (RBF kernel) & PCA ($n_h=2$) & PCA ($n_h=3$) & PCA ($n_h=10$)\\\hline
-Cost & $2.075\% \pm 0.206$ & $6.125\% \pm 0.339$ & $3.825\% \pm 0.237$ & $3.750\% \pm 0.167$\\
+Error & $2.075\% \pm 0.206$ & $6.125\% \pm 0.339$ & $3.825\% \pm 0.237$ & $3.750\% \pm 0.167$\\
 AUC & $0.99723 \pm 0.00040$ & $0.98402 \pm 0.00335$ & $0.99077 \pm 0.00238$ & $0.98729 \pm 0.00520$
 \end{tabular}
 \caption{Mean and standard deviation of accuracy and AUC for linear kernel models after application of two types of dimensionality reduction ; PCA or automatic relevance determination (which selected 21 features). PCA was applied by subtracting the mean, applying PCA on the training set and using the resulting projection on both the training - and test set after which an LS-SVM with an RBF kernel was tuned and trained. A linear kernel wasn't as performant as the number of dimensions decreased.}
@@ -242,13 +242,18 @@ AUC & $0.99723 \pm 0.00040$ & $0.98402 \pm 0.00335$ & $0.99077 \pm 0.00238$ & $0
 \subfloat[Breast cancer diagnosis $\qquad$ dataset (PCA).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/wisconsin_pca}}\hfil
 \subfloat[Diabetes dataset (\textit{t}-SNE).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/diabetes}}\hfil
 \subfloat[Diabetes dataset (PCA).]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/diabetes_pca}}\hfil
-\caption{Visualisation of the Wisoncin breast cancer - and the Pima indians diabetes datasets give an idea of how separable they are. The diabetes dataset appears significantly harder and this is reflectedi n the lower accuracy obtained with various models.}
+\caption{Visualisation of the Wisoncin breast cancer - and the Pima indians diabetes datasets give an idea of how separable they are. The diabetes dataset appears significantly harder and this is reflected in the lower accuracy obtained with various models.}
 \label{homeviz}
 \end{figure}
 
 \fakesubsection{Diabetes dataset}{}
 
-A basic 2-dimensional of the 8-dimensional Pima indians dataset reveals it to be more difficult than the previous one. A non-linear kernel is likely to outperform the linear one and indeed a mean accuracy of XXX, XXX and XXX were obtained with a linear, polynomial and RBF kernel (averaged over 10 runs using tuned parameters).
+A 2-dimensional visualisation of the 8-dimensional Pima indians dataset (figure \ref{homeviz}) reveals it to be more difficult than the previous one (distributions of the input variables tell the same story). Mean error rates of $21.7\%\pm 1.4$, $27.6\%\pm 5.3$ and $22.2\%\pm 1.8$ were obtained with a linear, polynomial and RBF kernel (averaged over 10 runs using tuned parameters)\footnote{The AUC for the training set turned out to be quite high for the polynomial kernel (> 0.9) which seemed to imply some degree of overfitting. Changing the cross-validation method to leave-one-out made the AUC for the test set comparable to that of the RBF kernel.}. The average AUCs were $0.844\pm 0.001$, $0.721\pm 0.112$ and $0.848\pm 0.004$. An RBF kernel appeared most performant. Automatic relevance determination did not prune any of the input variables which made subsequent poor results with PCA not surprising.
+
+\par The original paper dealing with this dataset used a custom algorithm related to neural networks. They used all training examples and reached an accuracy of 76\%. The performance of an LS-SVM with an RBF kernel trained on the full training set (named \texttt{total}) was typically comparable.
+
+
+%After automatic relevance determination the mean error rate and - AUC were $XXX\pm XXX$ and $XXX\pm XXX$.
 
 % and an overview of the 3 new kernels that were tried are given here :
 %
