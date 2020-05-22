@@ -23,7 +23,7 @@ where $\xi,\xi^*$ are slack variables representing deviation from the so-called 
 \subfloat[RBF kernel, $\sigma^2=0.1$.]{\includegraphics[width=0.16\textwidth]{../src/figures/estimation/gui_nonlinear_rbf}}\qquad
 \subfloat[Linear b-spline kernel, degree 5.]{\includegraphics[width=0.16\textwidth]{../src/figures/estimation/gui_nonlinear_bspline}}\qquad
 \subfloat[Exponential kernel, $\sigma^2=1.0$.]{\includegraphics[width=0.16\textwidth]{../src/figures/estimation/gui_nonlinear_exponential}}\qquad
-\caption{Visualisation of the results of experiments with various kernels and parameters for two different datasets. In the first row $\epsilon=0$ and \texttt{bound} = 10, in the second one $\epsilon=1$ and \texttt{bound} = 1000. Some of the models are likely to be overfitted though these are just toy examples without any test set.}
+\caption{Visualisation of the results of experiments with various kernels and parameters for two different artificial datasets. In the first row $\epsilon=0$ and \texttt{bound} = 10, in the second one $\epsilon=1$ and \texttt{bound} = 1000. Some of the models are likely to be overfitted though these are just toy examples without any test set.}
 \label{functionestimation}
 \end{figure}
 
@@ -98,7 +98,7 @@ One nice facet of this approach is that one ends up with error bars indicating u
 
 \fakesubsection{Automatic Relevance Determination}{}
 
-By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification (a form of dimensionality reduction). In the case of an RBF kernel by using a diagonal matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. For the toy dataset the algorithm found the $x_1$ to be the sole relevant one which is also illustrated in figure \ref{ardsinc}. An other, crude way of doing relevance determination is to consider all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset generalises best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$). This method wouldn't be satisfactory in practice as the power set grows sharply as the number of input dimensions increases. Treating the problem as a global optimisation is more appropriate for example. Or even simply removing random features one by one as long as the results keep on improving.
+By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don't contribute to the final classification (a form of dimensionality reduction). In the case of an RBF kernel by using a diagonal matrix $S$ as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of $S$ and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. For the toy dataset the algorithm found $x_1$ to be the sole relevant one which is also illustrated in figure \ref{ardsinc}. An other, crude way of doing relevance determination is to consider all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset generalises best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly ($mse>0.1$) and the subset excluding all but the first dimensions performed best ($mse\approx 0.012$). This method wouldn't be satisfactory in practice as the power set grows sharply as the number of input dimensions increases. Treating the problem as a global optimisation is more appropriate for example. Or even simply removing random features one by one as long as the results keep on improving.
 
 \fakesubsection{Robust regression}{}
 
@@ -131,11 +131,22 @@ Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Ou
 \label{robustsinc}
 \end{figure}
 
-\fakesubsection{Introduction: time series prediction}{}
-
-aaa
+% \fakesubsection{Introduction: time series prediction}{}
 
 \fakesubsection{Logmap dataset}{}
+
+The provided model for predicting measurements for the logmap dataset performs quite badly as can be seen below. The results are poor as none of the 3 parameters are tuned.
+
+\vspace{0.5cm}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{../src/figures/logmap/init}
+\caption{Initial attempt at modelling the logmap dataset (ground truth in blue, prediction in red).}
+\label{logmapinit}
+\end{figure}
+
+\par A straightforward way of picking a so-called order of a time series model (i.e. the number of past measurements taken into account for prediction of the next measurement) is to take advantage of the fact that the given dataset is rather small and the order is a discrete variable. This makes it sensible to go over all possible orders and tune regularisation parameter $\gamma$ and any of the kernel parameters for every possible order separately.
+
 
 
 \fakesubsection{Santa Fe dataset}{}
