@@ -208,7 +208,7 @@ Since the dataset is Gaussian an RBF kernel should be an appropriate pick. As it
 
 \fakesubsection{Wisconsin breast cancer dataset}{}
 
-With 30 features for each of the observations the Wisconsin breast cancer diagnosis dataset isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. Distributions of some of the features are shown below. The two classes denote benign - or malignant cancer tissue. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction\footnote{Whilst doing so it came to my attention that the \texttt{roc} function in the LS-SVM toolbox seems to return the thresholds in the wrong (reverse) order.} or by using weights in the SVM formulation to give more emphasis to the terms associated to the minority class. 
+With 30 features for each of the observations the Wisconsin breast cancer diagnosis dataset isn't trivial to visualise. \texttt{MATLAB} has an implementation of t-SNE or two principal components determined through PCA could be plotted. Distributions of some of the features are shown below. The two classes denote benign - or malignant cancer tissue. In contrast with the previous dataset this one's a bit unbalanced ($62.5\%$ belongs to the negative class) which can be accounted for through bias correction\footnote{Whilst doing so it came to my attention that the \texttt{roc} function in the LS-SVM toolbox \textit{seems} to return the thresholds in the wrong (reverse) order.} or by using weights in the SVM formulation to give more emphasis to the terms associated to the minority class. 
 
 \vspace{-0.5cm}
 \begin{figure}[htp]
@@ -217,13 +217,21 @@ With 30 features for each of the observations the Wisconsin breast cancer diagno
 \subfloat[Mean texture.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_2}}\hfil
 \subfloat[Mean perimeter.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_3}}\hfil
 \subfloat[Mean area.]{\includegraphics[width=0.25\textwidth]{../src/figures/classification/breast_hist_4}}\hfil
-\caption{Distributions of the first 4 features of the Wisconsin breast cancer dataset (red denotes malignant -, blue denotes benign tumors). There are 10 features in total and for each of these the mean, standard error and maximum value is given.}
+\caption{Distributions of the first 4 features of the Wisconsin breast cancer dataset (red denotes malignant -, blue denotes benign tumors). There are 10 features in total and for each of these the mean, standard error and maximum value is given. For some of the features none of those three appear to be particularly informative.}
 \label{breasthist}
 \end{figure}
 
 \par A simple automated tuning experiment of an LS-SVM with linear -, polynomial - and RBF kernels yielded average AUCs of $0.996\pm 0.001$, $0.937\pm 0.058$ and $0.995\pm 0.002$ respectively. It may be surprising that a linear kernel outperformed a non-linear one - the number of features is larger and there's not that many data points so a simpler decision boundary may help to avoid overfitting since Cover's theorem implies that it is more likely that the data is linearly separable when the number of dimensions is high (and the number of data points is low).
 
-\par As some of the features seem less informative than others (the mean area for example) it may be worthwhile to remove some of the noise either through PCA or a more sophisticated approach like automatic relevance determination.
+\par As some of the features seem less informative than others it may be worthwhile to remove some of them either through PCA or a more sophisticated approach like automatic relevance determination. A basic experiment ended up with the latter selecting 21 features. Training the model on these resulted in an AUC of 0.9973. The results with a larger number of tuning and training runs as well as a comparison with a basic PCA approach are shown in table \ref{breasttab}.
+
+\begin{table}
+\begin{tabular}
+
+\end{tabular}
+\label{breasttab}
+\caption{Mean and standard deviation of accuracy and AUC for linear kernel models after application of PCA or automatic relevance determination (which selected 21 features).}
+\end{table}
 
 \fakesubsection{Diabetes dataset}{}
 
