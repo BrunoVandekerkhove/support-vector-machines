@@ -135,7 +135,7 @@ Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Ou
 
 \fakesubsection{Logmap dataset}{}
 
-The provided model for predicting measurements for the logmap dataset performs quite badly as can be seen below. The results are poor as none of the 3 parameters are tuned.
+The provided model for predicting measurements for the logmap dataset performs quite badly as can be seen below. The results call for the tuning of the three parameters.
 
 \vspace{0.5cm}
 \begin{figure}[!h]
@@ -149,12 +149,13 @@ The provided model for predicting measurements for the logmap dataset performs q
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{../src/figures/logmap/mse}
-\caption{\texttt{mse} of just one tuned model per possible order. A minimum of 0.0408 was obtained for \texttt{order} = 23. The experiment was repeated thrice. When doing the same experiment where the \texttt{mse} was measured for the test set the results weren't nearly the same. Minimum errors were found for orders $\in[2,8]$.}
+\includegraphics[width=\textwidth]{../src/figures/logmap/mseval}\
+\includegraphics[width=\textwidth]{../src/figures/logmap/msetest}
+\caption{Mean squared errors for just one tuned model per possible order. The top row gives the error for the training set, the bottom row for the test set. A minimum is obtained starting at \texttt{order} = 20.}
 \label{logmapord}
 \end{figure}
 
-\par Figure \ref{logmapord} shows the mean squared errors in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the test set. The validation set gave a different story where the error remained stable up until an order of about 8.
+To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are show in figure \ref{logmapord}. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appears to be 20, anything higher would make the model more complex than necessary, increasing the risk of overfitting.
 
 %It can be noted that the automatic tuning of parameters does not take the simplicity into account, only the error on the validation set. This may lead to rather complex models and poor generalisation performance.
 
