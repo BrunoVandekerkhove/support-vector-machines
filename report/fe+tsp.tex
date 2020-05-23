@@ -149,13 +149,22 @@ The provided model for predicting measurements for the logmap dataset performs q
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{../src/figures/logmap/mseval}\
+\includegraphics[width=\textwidth]{../src/figures/logmap/mseval}\\
 \includegraphics[width=\textwidth]{../src/figures/logmap/msetest}
-\caption{Mean squared errors for just one tuned model per possible order. The top row gives the error for the training set, the bottom row for the test set. A minimum is obtained starting at \texttt{order} = 20.}
+\caption{Mean squared errors for just one tuned model per possible order. The top row gives the error for the training set, the bottom row for the test set. A minimum is obtained starting at \texttt{order} = 21. The mean absolute errors give a slightly more meaningful picture here because a model predicting the mean value for every time step could perform okay from the point of view of the mean squared error (due to the fact that the data lies between 0 and 1.}
 \label{logmapord}
 \end{figure}
 
-To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are show in figure \ref{logmapord}. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appears to be 20, anything higher would make the model more complex than necessary, increasing the risk of overfitting.
+To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are show in figure \ref{logmapord}. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appears to be somewhere in the early 20s and anything higher may cause poor generalisation due to overfitting. Results with a model with its order equal to 20 are shown below. The performance is clearly better.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{../src/figures/logmap/final}
+\caption{Results for a model using an RBF kernel with tuned parameters. The order is 21, $\gamma\approx 114481.964$ and $\sigma^2\approx 985.571$.}
+\label{logmapfinal}
+\end{figure}
+
+The performance is better.
 
 %It can be noted that the automatic tuning of parameters does not take the simplicity into account, only the error on the validation set. This may lead to rather complex models and poor generalisation performance.
 
