@@ -149,7 +149,7 @@ The provided model for predicting measurements for the logmap dataset performs q
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{../src/figures/logmap/mseval}\\
+\includegraphics[width=\textwidth]{../src/figures/logmap/mseval}
 \includegraphics[width=\textwidth]{../src/figures/logmap/msetest}
 \caption{Mean squared errors for just one tuned model per possible order. The top row gives the error for the training set, the bottom row for the test set. A minimum is obtained starting at \texttt{order} = 21. The mean absolute errors give a slightly more meaningful picture here because a model predicting the mean value for every time step could perform have a smaller mean squared error than a more meaningful model (due to the fact that the data lies between 0 and 1).}
 \label{logmapord}
@@ -168,5 +168,13 @@ To find good values for the parameters either cross-validation or the Bayesian f
 
 \fakesubsection{Santa Fe dataset}{}
 
+The results with a similar tuning method (this time by using cross-validation rather than making use of the Bayesian network) are shown in figure \ref{santafeord}.
 
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{../src/figures/santafe/mseval}
+%\includegraphics[width=\textwidth]{../src/figures/santafe/msestest}
+\caption{Mean squared errors for various models in function of the order. Parameters were tuned automatically using a grid search. Outliers (large errors) are removed to improve the visualisation.}
+\label{santafeord}
+\end{figure}
 
