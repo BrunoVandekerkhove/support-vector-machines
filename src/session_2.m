@@ -75,16 +75,16 @@ if display_runtime toc; end %#ok
 %% 2.2c Application to the Bayesian framework
 sigma = 0.4;
 gamma = 10;
-parameters = {Xtrain, Ytrain, 'f', gamma, sigma};
-crit_L1 = bay_lssvm(parameters, 1);
-crit_L2 = bay_lssvm(parameters, 2);
-crit_L3 = bay_lssvm(parameters, 3);
-[~,alpha,b] = bay_optimize(parameters, 1);
-[~,gamma] = bay_optimize(parameters, 2);
-[~,sigma] = bay_optimize(parameters, 3);
-sig2e = bay_errorbar(parameters, 'figure');
-fprintf("(alpha, b, gamma, sigma) = (%f,%f,%f,%f)\n", alpha, b, gamma ,sigma);
-export_pdf(gcf, 'estimation/bayesian_inference')
+% parameters = {Xtrain, Ytrain, 'f', gamma, sigma};
+% crit_L1 = bay_lssvm(parameters, 1);
+% crit_L2 = bay_lssvm(parameters, 2);
+% crit_L3 = bay_lssvm(parameters, 3);
+[~,alpha,b] = bay_optimize({Xtrain, Ytrain, 'f', gamma, sigma}, 1);
+[~,gamma] = bay_optimize({Xtrain, Ytrain, 'f', gamma, sigma}, 2);
+[~,sigma] = bay_optimize({Xtrain, Ytrain, 'f', gamma, sigma}, 3);
+sig2e = bay_errorbar({Xtrain, Ytrain, 'f', gamma, sigma}, 'figure');
+fprintf("(gamma, sigma) = (%f,%f)\n", gamma ,sigma);
+%export_pdf(gcf, 'estimation/bayesian_inference')
 %% 2.3 Automatic Relevance Determination
 X = 6 .* rand(100, 3) - 3;
 Y = sinc(X(:,1)) + 0.1 .* randn(100,1); % Only the first column is not random
