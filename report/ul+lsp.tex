@@ -29,9 +29,11 @@ The point of \textit{linear principal component analysis (PCA)} is to find a lin
 $$\max_{w,e}\quad\mathcal{J}_P(w,e)=\gamma\frac{1}{2}\sum_{k=1}^Ne_k^2-\frac{1}{2}w^Tw\qquad\text{such that $e_k=w^T\cdot x_k\quad(k=1,\dots, N)$}$$
 The errors represent the variance after projection which is to be maximised. Here too, a dual form can be introduced using Lagrange multipliers. This makes it possible to apply the kernel trick which can make for a non-linear approach (in which case PCA is applied in the feature space). Additionally an increase in the number of dimensions becomes possible when the number of training samples is larger than the number of dimensions. The bias term is responsible for centering the kernel matrix automatically rather than having to do this beforehand. This is especially interesting in the case of \textit{kernel spectral clustering (KSC)} which is considered in the next paragraph and where centring is not a straightforward thing to do.
 
-\par Because the alternative PCA formulation is model-based it becomes possible to do so-called out-of-sample extensions - the solution is not limited to the input data. It also becomes possible to tune models and find the right parameters that fit the data. However, because of the unsupervised nature of PCA this is not trivial. If the resulting model is meant to be used as a sort of preprocessing step e.g. for use in classification or in the context of a reconstruction problem (assuming an information bottleneck) then tuning can be done on the basis of the related loss function by making use of validation sets (as demonstrated previously). Otherwise it is possible to use common cross-validation techniques for linear PCA to pick an appropriate number of components followed by cross-validation based on pre-images to find useful values of the kernel parameters. These pre-images are approximations of inverse transformations of kernel PCA outputs back to the input space and can be used to calculate the reconstruction error for any point in the validation set (which consists of one data point in the case of LOOCV).
+\par Because the alternative PCA formulation is model-based it becomes possible to do so-called out-of-sample extensions - the solution is not limited to the input data. It also becomes possible to tune models and find the right parameters that fit the data. However, because of the unsupervised nature of PCA this is not trivial. If the resulting model is meant to be used as a sort of preprocessing step e.g. for use in classification or in the context of a reconstruction problem (assuming an information bottleneck) then tuning can be done on the basis of the related loss function by making use of validation sets (as demonstrated previously). Otherwise it is possible to apply cross-validation techniques based on pre-images to find useful values of the kernel parameters. These pre-images are approximations of inverse transformations of kernel PCA outputs back to the input space and can be used to calculate the reconstruction error for any point in the validation set (which consists of one data point in the case of LOOCV). They can be determined for any input vector $x$ by finding the input vector $z$ which minimises $||\phi(z)-P_{n_c}\cdot \phi(x)||^2$ (where $\phi(x)$ is the feature mapping of input $z$ and $P{n_c}\cdot\phi(x)$ is the projection of $x$ onto a subspace in the feature space spanned by the $n_c$ first eigenvectors found through kPCA).
 
-\par As an example of this method, consider the de-noising of a toy dataset the result of which are shown in figure \ref{kpcatoy}. Tuning is done manually. When the number of principal components increases the reconstruction improves which is not surprising. More meaningfully, retaining a smaller number of principal components results in good de-noising performance. As per usual the linear approach (classical PCA) is not able to capture the non-linearities in the input data leading to poor results for this particular dataset. The $\sigma^2$ parameter in the Gaussian kernel can lead to a loss of non-noisy information when set too low (or a lack of de-noising if set too high, as seen in figure \ref{kpcatoy}).
+\par More appropriate (less costly) approaches to tune the parameters include kernel Parallel Analysis (kPA) which is an extension of classical Parallel Analysis (PA). PA is used to find out an appropriate number of components for PCA instead of just going by manual inspection of the scree plot or applying a rule like Kaiser's (taking all eigenvectors for which the eigenvalue is larger than 1). Also possible is Model selection based on Distance Distributions (MDD) which improves upon kPA by improving noise estimation when the number of dimensions is low.
+
+\par Consider the de-noising of a toy dataset for which the resulting pre-images after kernel PCA using various parameter values are shown in figure \ref{kpcatoy}. Tuning is done manually. When the number of principal components increases the reconstruction improves which is not surprising. More meaningfully, retaining a smaller number of principal components results in good de-noising performance. As per usual the linear approach (classical PCA) is not able to capture the non-linearities in the input data leading to poor results for this particular dataset. The $\sigma^2$ parameter in the Gaussian kernel can lead to a loss of non-noisy information when set too low (or a lack of de-noising if set too high, as seen in figure \ref{kpcatoy}).
 
 \fakesubsection{Spectral clustering}{}
 
@@ -121,6 +123,45 @@ Sometimes the amount of data that is being dealt with is too large such that som
 
 \fakesubsection{Kernel principal component analysis}{}
 
+De-noising a quite noisy USPS dataset with classical PCA gives poor results at best (see figure \ref{usps_linear}). Kernel PCA with an RBF kernel manages to exploit the data much more and the results are a big improvement (see figure \ref{usps_kernel}).
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../src/figures/usps/linear_pca}
+        \caption{Results of linear PCA applied to the USPS dataset (top rows are original and noisy data, next 9 rows are results for $n_c\in [1,2,4,8,16,32,64,128,190]$).}
+\label{usps_linear}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../src/figures/usps/kernel_pca}
+        \caption{Results of kernel PCA applied to the USPS dataset (top rows are original and noisy data, next 9 rows are results for $n_c\in [1,2,4,8,16,32,64,128,190]$).}
+\label{usps_kernel}
+    \end{minipage}
+\end{figure}
+
+What was noted in the yin-yang toy dataset shown at the beginning of this section can be observed again in figure \ref{uspsband} ; small bandwidths remove important information (such that some digits get reconstructed without noise but as the wrong number) while larger ones fail to de-noise and noise is re-introduced slowly but surely in the reconstructions. In the first section of this report large bandwidths reduced the solution to something equivalent to a simple linear classifier, for the USPS dataset the same thing happens where large bandwidths make the results resemble that of classical, linear PCA.
+
+\par The small bandwidths cause the data points to be considered highly dissimilar and only the very strong directions of variation are extracted which makes for virtually noise-free yet completely wrong reconstructions. Conversely, very high bandwidths cause the data points to be considered very similar to each other and it gets harder to find meaningful directions of variation such that the noise is considered informative again.
+
+\par
+
+\begin{figure}[h]
+\centering
+%
+\subfloat[$f=0.01$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_001}}\hfil
+\subfloat[$f=0.1$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_01}}\hfil
+\subfloat[$f=1.0$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_1}}\hfil
+\subfloat[$f=10.0$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_10}}\\
+%
+%\subfloat[$f=100.0$.]{\includegraphics[width=0.30\textwidth]{../src/figures/usps/kernel_pca_5}}\quad
+%\subfloat[$f=1000.0$.]{\includegraphics[width=0.30\textwidth]{../src/figures/usps/kernel_pca_6}}\quad
+%\subfloat[$f=10000.0$.]{\includegraphics[width=0.30\textwidth]{../src/figures/usps/kernel_pca_7}}
+%
+\caption{De-noising the USPS hand-written digit dataset. $f$ is a factor with which is multiplied by about 51 to get the bandwidth.}
+\label{uspsband}
+\end{figure}
 
 \fakesubsection{Fixed-size LS-SVM}{}
 
