@@ -8,7 +8,7 @@ Two datasets are experimented with in figure \ref{functionestimation}. The first
 $$\min_{w,b,\xi,\xi^*}\frac{1}{2}w\cdot w^T+C\cdot\sum_{k=1}^N\xi+\xi^*$$
 where $\xi,\xi^*$ are slack variables representing deviation from the so-called \textit{$\epsilon$-insensitive tube} it can be deduced that the $C$ (the \textit{bound}) plays the usual role of a regularisation parameter, prioritising either the smoothness of the model or how much it fits the data (i.e. minimising the slack variables). $C=0$ leads to simple horizontal lines for the linear kernel which express the view that the two input features $x_1$ and $x_2$ aren't related. The $\epsilon$ parameter controls the width of the tube in which the data points are made to lie. A larger value decreases the number of support vectors and makes the model less accurate.
 
-\par The formulation resembles that of a least squares fit with Thikonov regularisation but the $\epsilon$-insensitive tube makes for a different loss function that encourages sparsity and since the problem is turned into a constraint optimisation problem a dual form can be expressed for which one can apply the kernel trick to be able to model any nonlinearities.
+\par The formulation resembles that of a least squares fit with Thikonov regularisation but the $\epsilon$-insensitive tube makes for a different loss function that encourages sparsity and since the problem is turned into a constrained optimisation problem a dual form can be expressed for which one can apply the kernel trick to be able to model any nonlinearities.
 
 \begin{figure}[h]
 \centering
@@ -155,7 +155,7 @@ The provided model for predicting measurements for the logmap dataset performs q
 \label{logmapord}
 \end{figure}
 
-To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are shown in figure \ref{logmapord}. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appears to be somewhere in the early 20s and anything higher may cause poor generalisation due to overfitting. Results with a model with its order equal to 20 are shown below. The performance is clearly better.
+To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are shown in figure \ref{logmapord}. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appeared to lie somewhere in the early 20s and picking anything higher may cause poor generalisation due to overfitting. Results with a model with its order equal to 20 are shown below. The performance has clearly improved.
 
 \begin{figure}[!h]
 \centering
@@ -168,7 +168,7 @@ To find good values for the parameters either cross-validation or the Bayesian f
 
 \fakesubsection{Santa Fe dataset}{}
 
-The results with a similar tuning method (this time by using cross-validation rather than making use of the Bayesian network) are shown in figure \ref{santafeord}.
+The per-order mean squared errors for an analogous tuning approach applied to the Santa Fe dataset (this time by using cross-validation rather than making use of the Bayesian network) are shown in figure \ref{santafeord}.
 
 \begin{figure}[!h]
 \centering
@@ -178,5 +178,17 @@ The results with a similar tuning method (this time by using cross-validation ra
 \label{santafeord}
 \end{figure}
 
+Picking the model with lowest error (prioritising a small order) gave the following result :
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{../src/figures/santafe/final}
+\caption{Results for a model using an RBF kernel with tuned parameters. The order is 42, $\gamma\approx 8423.289$ and $\sigma^2\approx 14.017$.}
+\label{santafefinal}
+\end{figure}
+
+Due to the limited number of runs the whole tuning procedure by no means proves that this model is best or that this order is optimal. By doing more experiments confidence can grow that certain orders are optimal for this particular dataset. 
+
+\par Up til now only LS-SVMs were toyed with. It's also possible to work with classical SVMs which - due to the choice of loss function - provide sparsity without necessitating a pruning post-processing step or some other approach to enforce it. The provided \texttt{MATLAB} library has one interesting kernel that is said to perform well for regression, i.e. the ANOVA kernel.
 
 
