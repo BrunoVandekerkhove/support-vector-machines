@@ -145,7 +145,7 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 
 \par The small bandwidths cause the data points to be considered highly dissimilar and only the very strong directions of variation are extracted which makes for virtually noise-free yet completely wrong reconstructions. Conversely, very high bandwidths cause the data points to be considered very similar to each other and it gets harder to find meaningful directions of variation such that the noise is considered informative again.
 
-\par
+\par It was stated previously that one way to tune kPCA is to measure reconstruction errors for the validation set to gauge the effectiveness of certain parameter combinations. A plot of the reconstruction errors measured for the provided training and validation sets is provided in figure \ref{uspserror}. The errors tell a meaningful story which also corresponds with the visualisation of the performance of various parameter combinations in figure \ref{uspsband}.
 
 \begin{figure}[h]
 \centering
@@ -161,6 +161,13 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 %
 \caption{De-noising the USPS hand-written digit dataset. $f$ is a factor with which is multiplied by about 51 to get the bandwidth.}
 \label{uspsband}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\subfloat[$f=0.01$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_001}}\hfil
+\caption{Reconstruction error for the training and validation sets in function of the bandwidth.}
+\label{uspserror}
 \end{figure}
 
 \fakesubsection{Fixed-size LS-SVM}{}
