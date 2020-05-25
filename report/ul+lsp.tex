@@ -92,6 +92,8 @@ Classification problems were considered in the first section of this report. In 
 \label{fixedsample}
 \end{wrapfigure}
 
+\endgroup
+
 \par The Laplacian matrix captures a lot of information about the graph such as the number of connected components (which equals the multiplicity of the eigenvalue $\lambda=0$). Related to this number is the property that if the data is sorted according to cluster membership the similarity matrix becomes block-diagonal. Such depictions are used in the figures above. 
 
 \par \textit{Kernel spectral clustering (KSC)} reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. 
@@ -107,8 +109,6 @@ Sometimes the amount of data that is being dealt with is too large such that som
 \par Examples of subsamples obtained through optimisation of the Renyi entropy are shown in figure \ref{fixedsample}. The kernel is a Gaussian one, the input data is normally distributed. It looks as though a larger value for $\sigma^2$ leads to a selection of data points that are more spread out.
 
 \par In figure \ref{fscomp} a fixed-size LS-SVM approach is compared with a variant which applies an $\ell_0$-penalty after generating a fixed-size LS-SVM solution. This post-processing does not influence the total runtime because its complexity is $\mathcal{O}(M^3)$ while that of the fixed-size LS-SVM is $\mathcal{O}(NM^2)$. While the error increases the number of support vector is much lower for the latter method. This is not surprising since the $\ell_0$-norm counts the number of non-zero values which means that it aims for sparse representations. The error drops as well, presumably because the model generalises better.
-
-\endgroup
 
 \begin{figure}[h]
 \centering
@@ -145,7 +145,7 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 
 \par The small bandwidths cause the data points to be considered highly dissimilar and only the very strong directions of variation are extracted which makes for virtually noise-free yet completely wrong reconstructions. Conversely, very high bandwidths cause the data points to be considered very similar to each other and it gets harder to find meaningful directions of variation such that the noise is considered informative again.
 
-\par It was stated previously that one way to tune kPCA is to measure reconstruction errors for the validation set to gauge the effectiveness of certain parameter combinations. A plot of the reconstruction errors measured for the provided training and validation sets is provided in figure \ref{uspserror}. The errors tell a meaningful story which also corresponds with the visualisation of the performance of various parameter combinations in figure \ref{uspsband}.
+\par It was stated previously that one way to tune kPCA is to measure reconstruction errors for the validation set to gauge the effectiveness of certain parameter combinations. A plot of the reconstruction errors measured for the provided training and validation sets is provided in figure \ref{uspserror}. The errors tell a meaningful story which also corresponds to the visualisation of the performance of various parameter combinations in figure \ref{uspsband}.
 
 \begin{figure}[h]
 \centering
@@ -165,10 +165,25 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 
 \begin{figure}[h]
 \centering
-\subfloat[$f=0.01$.]{\includegraphics[width=0.25\textwidth]{../src/figures/usps/kernel_pca_001}}\hfil
-\caption{Reconstruction error for the training and validation sets in function of the bandwidth.}
+\subfloat[Errors (root mean squared errors) for the training set.]{\includegraphics[width=0.32\textwidth]{../src/figures/usps/contour_xtest1}}\hfil
+\subfloat[Errors (root mean squared errors) for the first test set.]{\includegraphics[width=0.32\textwidth]{../src/figures/usps/contour_xtest1}}\hfil
+\subfloat[Errors (root mean squared errors) for the second test set.]{\includegraphics[width=0.32\textwidth]{../src/figures/usps/contour_xtest2}}\hfil
+\caption{Reconstruction error for the training and validation sets in function of the bandwidth and the number of components. This is a crude grid search. More appropriate tuning methods include kernel parallel analysis or Model selection based on Distance Distributions (MDD).}
 \label{uspserror}
 \end{figure}
+
+\begingroup
+\setlength{\columnsep}{0.2cm}
+\setlength{\intextsep}{0cm}
+\begin{wrapfigure}{r}{.3\textwidth}
+\vspace{-0.6cm}
+\begin{minipage}{\linewidth}
+    \centering\captionsetup[subfigure]{justification=centering}
+    \includegraphics[width=\linewidth]{../src/figures/fixedsize/fixedsize_1}
+\end{minipage}
+\caption{Denoising of the USPS dataset using tuned parameters.}
+\label{fixedsample}
+\end{wrapfigure}
 
 \fakesubsection{Fixed-size LS-SVM}{}
 
