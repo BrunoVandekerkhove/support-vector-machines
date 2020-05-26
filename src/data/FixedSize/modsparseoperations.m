@@ -25,7 +25,7 @@ if (function_type=='c' && (~strcmp(process_type,'FullL0_norm')) && (~strcmp(proc
     w=w(1:nb_sv,:);
     trysvX=svX(1:nb_sv,:);
     trysvY=svY(1:nb_sv,:);
-    testYh = round(testYh); % sign(testYh)
+    testYh = sign(testYh); % sign(testYh)
     if (strcmp(process_type,'FS-LSSVM'))
         newsvX = trysvX;
         newsvY = trysvY;
@@ -53,7 +53,7 @@ if (function_type=='c' && ((strcmp(process_type,'FullL0_norm')) || (strcmp(proce
         [alpha,b] = trainlssvm({svX,svY,'c',gam,sig,kernel_type});
         if (strcmp(process_type,'Approx_LSSVM'))
             %testYh = simlssvm({svX,svY,'c',gam,sig,kernel_type},Xt,{alpha,b});
-            testYh = round(alpha'*kernel_matrix(svX,kernel_type,sig,Xt)+b)';
+            testYh = sign(alpha'*kernel_matrix(svX,kernel_type,sig,Xt)+b)';
             newsvX = svX;
             newsvY = svY;
             err = sum(testY~=testYh)/length(testYh);
@@ -338,14 +338,14 @@ if (function_type=='c' && (strcmp(process_type,'SV_L0_norm')||(strcmp(process_ty
     newfeatures = AFEm(newsvX,kernel_type,sig,X);
     [w,b,testYh]=ridgeregress(newfeatures(train,:),trainY,gam,newsvX,newfeatures(test,:));
     clear newfeatures;
-    testYh=round(testYh);
+    testYh=sign(testYh);
     err=sum(testYh~=testY)/length(testYh);
     
 end
 
 %Now performing the misclassification estimate for L0_norm
 if (function_type=='c' && ((strcmp(process_type,'L0_norm'))||(strcmp(process_type,'FullL0_norm'))))
-    testYh = round(req_alpha'*kernel_matrix(newsvX,kernel_type,sig,Xt)+req_b)';
+    testYh = sign(req_alpha'*kernel_matrix(newsvX,kernel_type,sig,Xt)+req_b)';
     w =  req_alpha;
     b = req_b;
     err = sum(testY~=testYh)/length(testYh);
@@ -418,7 +418,7 @@ if (function_type=='c' && strcmp(process_type,'WINDOW'))
     trainfeatures = newfeatures(train,:);
     testfeatures = newfeatures(test,:);
     [~,~,testYh]=ridgeregress(trainfeatures,trainY,gam,newsvX,testfeatures);
-    testYh = round(testYh);
+    testYh = sign(testYh);
     err = sum(testYh~=testY)/length(testYh);
 end
 

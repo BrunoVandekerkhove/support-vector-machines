@@ -5,7 +5,7 @@ close all
 %
 % make a subset
 %
-X = 3.*randn(25,2);
+X = 3.*randn(100,2);
 ssize = 3;
 sig2 = 1;
 indices_subset = 1:ssize;

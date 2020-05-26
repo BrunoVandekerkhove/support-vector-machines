@@ -1,4 +1,5 @@
 function [X,Y,testX,testY] = initial(X,Y,function_type,testX,testY)
+% This thing appears to standardize the input and then shuffles it around
 
 if nargin <4
     testX = [];

@@ -49,9 +49,9 @@ if (function_type=='c')
     %Initialization of other variable
     N=length(X);
     
-    %10 fold cross validation
-    folds=10;
-    folds1=3;
+    %k fold cross validation
+    folds=10; % 
+    folds1=3; % 
     block_size = floor(N/folds1);
     process_type=user_process;
     %Perform Classification
@@ -64,46 +64,46 @@ if (function_type=='f')
     %Initialization of other variable
     N=length(X);
     
-    %Perform 10 fold cross-validation
-    folds=10;
-    folds1=3;
+    %Perform k fold cross-validation
+    folds=5; % 
+    folds1=1; % 
     block_size = floor(N/folds1);
     process_type=user_process;
     [errmatrix,svmatrix,timematrix]=regression(X,Y,N,renyie,subset,svX,svY,folds,block_size,kernel_type,global_opt,process_type,windowrange,testX,testY);
 end;
 
 function [ematrix,smatrix,tmatrix] = classification(X,Y,N,renyie,subset,svX,svY,folds,block_size,kernel_type,global_opt,process_type,windowrange,testX,testY)
-
+global repetitions;
 if ((~isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwinL'))))...
         ||(isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwinL')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwin'))))...
         ||(isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwinL')))))
-    ematrix=zeros(length(process_type)+length(windowrange)-1,folds);
-    smatrix=zeros(length(process_type)+length(windowrange)-1,folds);
-    tmatrix=zeros(length(process_type)+length(windowrange)-1,folds);
+    ematrix=zeros(length(process_type)+length(windowrange)-1,repetitions);
+    smatrix=zeros(length(process_type)+length(windowrange)-1,repetitions);
+    tmatrix=zeros(length(process_type)+length(windowrange)-1,repetitions);
     avgerr=0.0*ones(length(process_type)+length(windowrange)-1,1);
 elseif (~isempty(process_type(strcmp(process_type(:),'WINDOW')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwinL'))) ...
         ||(~isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwinL'))))...
         ||(isempty(process_type(strcmp(process_type(:),'WINDOW')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwinL')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwin')))))
-    ematrix=zeros(length(process_type)+2*length(windowrange)-2,folds);
-    smatrix=zeros(length(process_type)+2*length(windowrange)-2,folds);
-    tmatrix=zeros(length(process_type)+2*length(windowrange)-2,folds);
+    ematrix=zeros(length(process_type)+2*length(windowrange)-2,repetitions);
+    smatrix=zeros(length(process_type)+2*length(windowrange)-2,repetitions);
+    tmatrix=zeros(length(process_type)+2*length(windowrange)-2,repetitions);
     avgerr=0.0*ones(length(process_type)+2*length(windowrange)-2,1);
     %glbavgerr=inf*ones(length(process_type)+2*length(windowsize)-2,1);
 elseif (~isempty(process_type(strcmp(process_type(:),'WINDOW')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&~isempty(process_type(strcmp(process_type(:),'LSSVMwinL'))))
-    ematrix=zeros(length(process_type)+3*length(windowrange)-3,folds);
-    smatrix=zeros(length(process_type)+3*length(windowrange)-3,folds);
-    tmatrix=zeros(length(process_type)+3*length(windowrange)-3,folds);
+    ematrix=zeros(length(process_type)+3*length(windowrange)-3,repetitions);
+    smatrix=zeros(length(process_type)+3*length(windowrange)-3,repetitions);
+    tmatrix=zeros(length(process_type)+3*length(windowrange)-3,repetitions);
     avgerr=0.0*ones(length(process_type)+2*length(windowrange)-3,1);
 elseif (isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwin')))&&isempty(process_type(strcmp(process_type(:),'LSSVMwinL'))))
-    ematrix = zeros(length(process_type),folds);
-    smatrix = zeros(length(process_type),folds);
-    tmatrix = zeros(length(process_type),folds);
+    ematrix = zeros(length(process_type),repetitions);
+    smatrix = zeros(length(process_type),repetitions);
+    tmatrix = zeros(length(process_type),repetitions);
     avgerr = 0.0*ones(length(process_type),1);
     %glbavgerr=inf*ones(length(process_type),1);
 end;
 folds1=1;
 %par
-for j=1:10
+for j=1:repetitions
     avgerr=0.0*avgerr;
     if (isempty(testX) && isempty(testY))
     %Once obtained the best gamma and sigma perform the 10-fold cross
