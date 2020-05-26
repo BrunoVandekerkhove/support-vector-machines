@@ -8,6 +8,7 @@ addpath(genpath('lssvm'))
 close all
 %% 1.1 Kernel principal component analysis
 kpca_script
+kpca_script_custom
 %% 1.2 Spectral clustering
 sclustering_script
 %% 1.3a Fixed-size LS-SVM
