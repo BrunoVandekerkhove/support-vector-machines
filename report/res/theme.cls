@@ -83,7 +83,11 @@
 	\par\refstepcounter{subsection}
 	\addcontentsline{toc}{subsection}{#1}
 }
-
+\newcommand{\fakesubsubsection}[2]{
+	\subsubsection*{#1#2}
+	\par\refstepcounter{subsubsection}
+	\addcontentsline{toc}{subsubsection}{#1}
+}
 
 
 \newtoks\authors
