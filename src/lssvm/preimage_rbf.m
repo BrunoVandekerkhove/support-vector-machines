@@ -1,4 +1,4 @@
-function Ximg = preimage_rbf(Xtr,sig2,U,B,type,npcs,maxIts)
+function [Ximg,d] = preimage_rbf(Xtr,sig2,U,B,type,npcs,maxIts)
 %
 % function Ximg = preimage_rbf(Xtr,sig2,U,B,type,npcs,maxIts)
 %   Reconstruction or denoising after kernel PCA with RBF kernels, i.e. to find the
@@ -63,7 +63,7 @@ else
     end
 end
 
-if nargin<7, maxIts=1000; end
+if nargin<7, maxIts=100; end
 
 U=U(:,1:npcs); 
 
@@ -91,7 +91,7 @@ for n=1:Nt
             % choose a different starting value  
 %            [k,id]=min(k); x_new = Xtr(id,:);
             randn('state',cputime+ts); x_new=(randn(1,dim)+mX).*sX;  
-            fprintf('%5d> Starting value changed!(d=0) \n', ts);  
+            %fprintf('%5d> Starting value changed!(d=0) \n', ts);  
         else 
             % update approximate preimage with a linear combination of kpca training data
             x_new = sum(rs.*k*ones(1,dim).*Xtr)/d;
@@ -108,7 +108,7 @@ for n=1:Nt
         else
             if ts>=maxIts;
                 cont=0;
-                fprintf('%5d> Maximum iteration reached!\n', ts); 
+                %fprintf('%5d> Maximum iteration reached!\n', ts); 
             elseif t>=500;
                 % choose a different starting value                 
 %                [k,id]=min(k); x = Xtr(id,:); 
