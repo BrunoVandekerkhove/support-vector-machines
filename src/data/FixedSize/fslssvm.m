@@ -43,7 +43,7 @@ svY = Y(subset,:);
 
 %Enter the subset, svX and svY as model variables in a file 
 modelvariables = [subset svX svY];
-csvwrite('modelvariables.mat',modelvariables);
+csvwrite('data/modelvariables.mat',modelvariables);
 
 [e,s,t]=fsoperations(X,Y,function_type,kernel_type,global_opt,user_process,windowrange,renyie,subset,svX,svY,testX,testY);
 process_matrix_err = [process_matrix_err e'];
