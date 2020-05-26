@@ -7,7 +7,7 @@ switch dataset
     case 2
         data = load('shuttle.dat', '-ascii'); 
         function_type = 'c';  
-        data = data(1:700,:);
+        data = data(1:3000,:);
     case 3
         data = load('california.dat', '-ascii'); 
         function_type = 'f';
@@ -17,24 +17,23 @@ end
 % Set up data
 X = data(:,1:end-1);
 Y = data(:,end);
-Xtest = [];
-Ytest = [];
-
-% Build train / val / test (random split, stratified)
-% c = cvpartition(Y, 'HoldOut', 0.5, 'Stratify', true);
-% Xother = X(c.test);
-% Yother = Y(c.test);
-% c2 = cvpartition(Y(c.test), 'Holdout', 0.5, 'Stratify', true);
-% Xtr = X(c.train);
-% Xval = Xother(c2.train);
-% Xtest = Xother(c2.test);
-% Ytr = Y(c.train);
-% Yval = Yother(c2.train);
-% Ytest = Yother(c2.test);
+if 0
+    Xtr = X;
+    Ytr = Y;
+    Xtest = [];
+    Ytest = [];
+else
+    % Build train / val / test (random split, stratified)
+    c = cvpartition(Y, 'HoldOut', 0.2, 'Stratify', true);
+    Xtr = X(c.training,:);
+    Ytr = Y(c.training);
+    Xtest = X(c.test,:);
+    Ytest = Y(c.test);
+end
 
 % Parameter for input space selection
 % Please type >> help fsoperations; to get more information  
-k = 2;
+k = 8;
 kernel_type = 'RBF_kernel'; % or 'lin_kernel', 'poly_kernel'
 global_opt = 'csa'; % 'csa' or 'ds'
 
@@ -43,4 +42,4 @@ user_process={'FS-LSSVM', 'SV_L0_norm'};
 window = [15,20,25];
 
 % Perform FS-LSVM
-[e,s,t] = fslssvm(X, Y, k, function_type, kernel_type, global_opt, user_process, window, Xtest, Ytest);
+[e,s,t] = fslssvm(Xtr, Ytr, k, function_type, kernel_type, global_opt, user_process, window, Xtest, Ytest);

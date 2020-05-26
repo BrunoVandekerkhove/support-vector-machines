@@ -4,7 +4,7 @@ function [errmatrix,svmatrix,timematrix] = fsoperations(X,Y,function_type,kernel
 %       X = training dataset
 %       Y = test dataset
 %       k = constant factor used to determine number of representative
-%       points by heursitic k*sqrt(N) where N = dataset size
+%       points by heuristic k*sqrt(N) where N = dataset size
 %       function_type = 'c' or 'f' for classification & regression
 %       respectively
 %       kernel_type = currently supports 'RBF_kernel' [Extension to

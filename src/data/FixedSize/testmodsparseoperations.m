@@ -25,7 +25,7 @@ if (function_type=='c' && (~strcmp(process_type,'FullL0_norm')) && (~strcmp(proc
     w=w(1:nb_sv,:);
     trysvX=svX(1:nb_sv,:);
     trysvY=svY(1:nb_sv,:);
-    testYh = sign(testYh);
+    testYh = round(testYh); %SIGN
     if (strcmp(process_type,'FS-LSSVM'))
         newsvX = trysvX;
         newsvY = trysvY;
@@ -46,7 +46,7 @@ end;
 if (function_type=='c' && ((strcmp(process_type,'FullL0_norm')) || (strcmp(process_type,'L0_norm')) || (strcmp(process_type,'LSSVMwin')) || (strcmp(process_type,'LSSVMwinL'))))
     if (strcmp(process_type,'FullL0_norm'))
         [~,~,testYh]=modridgeregress(Xfeatures,Y,gam,kernel_type,sig,svX,omega,testX);
-        testYh=sign(testYh);
+        testYh=round(testYh); %SIGN
         if (~isempty(testY))
             err=sum(testY~=testYh)/length(testY);
         else
@@ -337,7 +337,7 @@ if (function_type=='c' && (strcmp(process_type,'SV_L0_norm')||(strcmp(process_ty
     [w,b,testYh]=ridgeregress(newfeatures,Y,gam,svX,newtestfeatures);
     clear newfeatures;
     clear newtestfeatures;
-    testYh=sign(testYh);
+    testYh=round(testYh); %SIGN
     if (~isempty(testY))
         err=sum(testYh~=testY)/length(testYh);
     else
@@ -353,7 +353,7 @@ end
 
 %Now performing the misclassification estimate for L0_norm
 if (function_type=='c' && ((strcmp(process_type,'L0_norm'))||(strcmp(process_type,'FullL0_norm'))))
-    testYh = sign(req_alpha'*kernel_matrix(newsvX,kernel_type,sig,testX)+req_b)';
+    testYh = round(req_alpha'*kernel_matrix(newsvX,kernel_type,sig,testX)+req_b)'; %SIGN
     w =  req_alpha;
     b = req_b;
     if (~isempty(testY))
@@ -403,7 +403,7 @@ end;
 if (function_type=='c' && strcmp(process_type,'WINDOW'))
     svtesth=svfeatures*w+b;
     %Select the support vectors which are correctly classified
-    svtestclass=sign(svtesth);
+    svtestclass=round(svtesth); %SIGN
     svtesth=[svtesth(svtestclass==trysvY) find(svtestclass==trysvY)];         %Have the correctly classified ones with indexes
     svtesth=sortrows(svtesth);
     partsize = ceil((1.0*window_size*length(svtesth))/100);
@@ -447,7 +447,7 @@ if (function_type=='c' && strcmp(process_type,'WINDOW'))
     newfeatures = AFEm(newsvX,kernel_type,sig,X);
     testfeatures = AFEm(newsvX,kernel_type,sig,testX);
     [~,~,testYh]=ridgeregress(newfeatures,Y,gam,testfeatures);
-    testYh = sign(testYh);
+    testYh = round(testYh); %SIGN
     if (~isempty(testY))
         err = sum(testYh~=testY)/length(testYh);
     else
@@ -488,7 +488,7 @@ end;
 if (function_type=='c' && strcmp(process_type,'LSSVMwin'))
     svtesth=simlssvm({svX,svY,'c',gam,sig,kernel_type},{alpha,b},svX);
     %Select the support vectors which are correctly classified
-    svtestclass=sign(svtesth);
+    svtestclass=round(svtesth); %SIGN
     svtesth=[svtesth(svtestclass==svY) find(svtestclass==svY)];         %Have the correctly classified ones with indexes
     svtesth=sortrows(svtesth);
     partsize = ceil((1.0*window_size*length(svtesth))/100);
@@ -532,7 +532,7 @@ if (function_type=='c' && strcmp(process_type,'LSSVMwin'))
     newfeatures = AFEm(newsvX,kernel_type,sig,X);
     newtestfeatures = AFEm(newsvX,kernel_type,sig,testX);
     [~,~,testYh]=ridgeregress(newfeatures,Y,gam,newtestfeatures);
-    testYh = sign(testYh);
+    testYh = round(testYh); %SIGN
     if (~isempty(testY))
         err = sum(testYh~=testY)/length(testYh);
     else
@@ -570,7 +570,7 @@ end;
 if (function_type=='c' && strcmp(process_type,'LSSVMwinL'))
     svtesth=simlssvm({svX,svY,'c',gam,sig,kernel_type},{alpha,b},svX);
     %Select the support vectors which are correctly classified
-    svtestclass=sign(svtesth);
+    svtestclass=round(svtesth); %SIGN
     svtesth=[svtesth(svtestclass==svY) find(svtestclass==svY)];         %Have the correctly classified ones with indexes
     svtesth=sortrows(svtesth);
     partsize = ceil((1.0*window_size*length(svtesth))/100);
@@ -620,7 +620,7 @@ if (function_type=='c' && strcmp(process_type,'LSSVMwinL'))
     beta = H\P;
     b = (Y'*onevector - beta'*Kred'*onevector)/trainpoints;
     testYh = (beta'*kernel_matrix(newsvX,kernel_type,sig,testX)+b)';
-    testYh = sign(testYh);
+    testYh = round(testYh); %SIGN
     if (~isempty(testY))
         err = sum(testYh~=testY)/length(testYh);
     else
