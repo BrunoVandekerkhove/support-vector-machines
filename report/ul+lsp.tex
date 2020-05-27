@@ -313,23 +313,23 @@ The validity of the implementation was tested by re-doing the regression on a no
 \begin{minipage}{\linewidth}
     \centering\captionsetup[subfigure]{justification=centering}
 \includegraphics[width=\linewidth]{../src/figures/committee/sinc_2_models}
-    \caption*{$\#\ \text{models} = 2$}
+%    \caption*{$\#\ \text{models} = 2$}
 \includegraphics[width=\linewidth]{../src/figures/committee/sinc_4_models}
-    \caption*{$\#\ \text{models} = 4$}
+%    \caption*{$\#\ \text{models} = 4$}
 \includegraphics[width=\linewidth]{../src/figures/committee/sinc_8_models}
-    \caption*{$\#\ \text{models} = 8$}
+%    \caption*{$\#\ \text{models} = 8$}
 \end{minipage}
-\caption{Regression on the \texttt{sinc} function using committee networks with a varying number of models. Prediction in red, \texttt{sinc} function in green, noisy \texttt{sinc} in blue.}
+\caption{Regression on the \texttt{sinc} function using committee networks with a varying number of models (2, 4 and 8). Prediction in red, \texttt{sinc} function in green, noisy \texttt{sinc} in blue.}
 \label{committeesinc}
 \end{wrapfigure}
 
 \par The committee network improved upon the FS LS-SVM approach when 4 models were used, having a mean absolute error of 42937.08 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this.
 
-\par What became apparent is that the standardisation procedure both in the case of the fixed-sized LS-SVMs as well as the committee network appeared to greatly reduce predictive power such that without it the FS LS-SVMs achieved a mean absolute of around 52k. When standardisation was used for the committee network mean absolute error rates would typically rise above 60k. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
+\par What became apparent is that the standardisation procedure both in the case of the fixed-sized LS-SVMs as well as the committee network appeared to greatly reduce predictive power such that without it the FS LS-SVMs achieved a mean absolute error of around 52k. When standardisation was used for the committee network mean absolute error rates would typically rise above 60k. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
 
 \par A limited experiment using an MLP with as inputs the outputs of the SVM models was tried as well. This to obtain a non-linear combination. The model was trained with the Adam optimiser using a 75/25\% train \& validation split and the results turned out to be comparable to the linear approach as the mean absolute error turned out to be about 47k.
 
-\par Of course none of these models are anywhere near close to perfect so many improvements could be obtained through further experimentation or even by using entirely different frameworks altogether.
+\par Overall the obtained results after some modifications Of course none of these models are anywhere near close to perfect so many improvements could be obtained through further experimentation or even by using entirely different frameworks altogether.
 
 \endgroup
 
