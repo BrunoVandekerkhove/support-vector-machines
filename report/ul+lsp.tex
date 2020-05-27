@@ -195,7 +195,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 
 \par The provided code reduces the dataset's size to 700 samples in which only 5 of the classes are present (more than 81\% being the majority class), presumably because of the long runtimes. It does not seem to handle multi-class problems per se but still makes use of the sign function for predictions effectively treating the problem as a sort one-versus-all binary classification problem (though because the class labels aren't set to minus one it's not even exactly that). Therefore initial results see a fairly large error rate which tend to get worse than the majority rule. However, from these results which are shown in figure \ref{shuttleestimates} it can be seen that the $\ell_0$ post-processing step does not increase the required time (nor does windowing), which mirrors the results in the study proposing these methods. The required time across values for $k$ (which specifies the number of prototype vectors indirectly through the relation $M=k\cdot\sqrt{N}$) matches the theoretical complexity $\mathcal{O}(k^2\cdot N^2)$. The post-processing also makes the number of support vectors drop, and the error tends to increase a bit.
 
-\par In further experiments instead of using the provided set, at least 3000 samples were picked (such that class 3 was represented more than once and stratification can be applied). For parameter tuning 5-fold cross-validation was applied (minimising misclassification), whereas the evaluation was done by creating a 80/20\% training \& test set split through stratified sampling.
+\par In further experiments instead of using the provided set, at least 3000 samples were picked (such that class 3 was represented more than once and stratification could be applied). For parameter tuning 5-fold cross-validation was applied (minimising misclassification), whereas the evaluation was done by creating a 80/20\% training \& test set split through stratified sampling.
 
 %\par For training, validation and evaluation a training set of 29.000 - and training and validation sets of both 14.500 samples were used (split randomly by stratification).
 
@@ -210,7 +210,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 \label{shuttlehist}
 \end{figure}
 
-To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing classes one by one, taking the largest first. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, - number of support vectors and - time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
+To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing the majority class, then proceeds to distinguish each of the next class taking the largest classes first. In other words ; class 1 was compared with the others, a model was built on that basis, then for all samples not belonging to class 1 this same procedure was applied, this time for the second largest class (class 4). And so on until only two classes remain. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, - number of support vectors and - time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
 
 \begin{table}[htb]
 \centering
@@ -219,31 +219,35 @@ To get more meaningful error estimates and an overall comparison between a fixed
 kNN ($k=1$) & 99.86\% & \textit{negligible} & \textit{NA} \\
 kNN ($k=2$) & 99.82\% & \textit{negligible} & \textit{NA} \\
 kNN ($k=3$) & 99.81\% & \textit{negligible} & \textit{NA} \\
-SVM multiclass (FS-LSSVM, $k=2$) & 99.77\% & 7.69s & 740.00 \\
-SVM multiclass ($\ell_0$ reduced FS-LSSVM, $k=2$) & 99.61\% & 9.15s & 451.67 \\
-SVM multiclass ($\ell_0$ reduced FS-LSSVM, $k=4$) & 99.74\% & 33.09s & 815.67 \\
-SVM multiclass ($\ell_0$ reduced FS-LSSVM, $k=6$) & 99.70\% & 87.72s & 1804.00 \\
-SVM multiclass ($\ell_0$ reduced FS-LSSVM, $k=8$) & 99.67\% & 158.27s & 2791.67 \\
+FS LS-SVM multiclass ($k=2$) & 99.77\% & 7.69s & 740.00 \\
+FS LS-SVM multiclass ($k=4$) & 99.82\% & 18.03s & 1466.67 \\
+FS LS-SVM multiclass ($k=6$)$^{\dagger}$ & 99.83\% & 31.37s & 2176.00 \\
+FS LS-SVM multiclass ($\ell_0$ reduced, $k=2$) & 99.61\% & 9.15s & 451.67 \\
+FS LS-SVM multiclass ($\ell_0$ reduced, $k=4$) & 99.74\% & 33.09s & 815.67 \\
+FS LS-SVM multiclass ($\ell_0$ reduced, $k=6$) & 99.70\% & 87.72s & 1804.00 \\
+FS LS-SVM multiclass ($\ell_0$ reduced, $k=8$) & 99.67\% & 158.27s & 2791.67 \\
 \end{tabular}
-\caption{Comparison of some methods for classification of the Shuttle dataset. Averaged over 3 runs. Tuning the models was done through 5-fold cross-validation and evaluation was done on 25\% of the data (14.494 samples). Classes 6 \& 7 were disregarded. For kNN the algorithm keeps on degrading as $k$ (the number of neighbours) increases. At $k=4$ it starts performing worse than the SVM.}
+\caption{Comparison of some methods for classification of the Shuttle dataset. Averaged over 3 runs. Tuning the models was done through 5-fold cross-validation and evaluation was done on 25\% of the data (14.494 samples). Classes 6 \& 7 were disregarded. For kNN the algorithm keeps on degrading as $k$ (the number of neighbours) increases. At $k=4$ it tends to start performing worse than the fixed-sized LS-SVMs. Note that the number of support vectors is for all SVMs together and the time for tuning wasn't measured. $^{\dagger}$Only 1 run was used for this setting due to long runtimes.}
 \label{shuttlemulticomparison}
 \end{table}
 
-A general trend that was seen in the experiments is that increasing $k$ tends to decrease the error rate up until a certain point. The results speak for themselves and are equivalent to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
+A general trend that was seen in the experiments is that increasing $k$ tends to decrease the error rate up until a certain point. The results speak for themselves and are proportional to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
 
-\par Ironically a simple $k$-nearest-neighbor (kNN) search using the \texttt{MATLAB} function \texttt{knnsearch} performed better for some values of $k$ (this time denoting the number of neighbours that are considered). A bit surprising maybe, though the dataset is not particularly hard to classify and SVMs may be an overkill. On the flipside, kNN takes in more memory as the training set is quite large in comparison with any of the measured number of support vectors. And the SVMs could be tuned better to improve the results further. As tuning the SVMs turned out to be quite inefficient no further experimentation is done.
+\par Ironically a simple $k$-nearest-neighbor (kNN) search using the \texttt{MATLAB} function \texttt{knnsearch} performed better for low values of $k$ (this time denoting the number of neighbours that are considered). A bit surprising maybe, though the dataset is not particularly hard to classify. On the flipside, kNN takes in more memory as the training set is quite large in comparison with any of the measured number of support vectors. And it cannot be tuned as much ; only $k$ and the distance function can be.
 
 \begin{figure}[!htb]
 \centering
 \begin{minipage}{\textwidth}
         \centering
-        \subfloat[Error estimation.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_error_2}}\hfil
-	\subfloat[Estimation of the number of support vectors.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_sv_2}}\hfil
-	\subfloat[Time estimation.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_time_2}}\hfil
+        \subfloat[Error estimation.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_error_x}}\hfil
+	\subfloat[Estimation of the number of support vectors.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_sv_x}}\hfil
+	\subfloat[Time estimation.]{\includegraphics[width=0.32\textwidth]{../src/figures/fssvm/shuttle_comparison_time_x}}\hfil
 \end{minipage}
-\caption{Estimates of the error, number of support vectors and computational time for a multiclass SVM approach. The estimates are based on a 75/25\% train \& test split obtained through stratified sampling.}
+\caption{Estimates of the error, number of support vectors and computational time for a multiclass SVM approach. The estimates are based on a 75/25\% train \& test split obtained through stratified sampling. The number of prototype vectors is $M=k\cdot\sqrt({N}$ with $k=2$.}
 \label{shuttlemultiestimates}
 \end{figure}
+
+In the case of fixed-sized LS-SVMs $\gamma$, the type of kernel and its parameters, $k$ and even some other things such as the tuning algorithm can be changed. However, because of costly tuning processes no more experiments were done. 
 
 \begin{figure}[!htb]
 \centering
