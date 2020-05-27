@@ -43,7 +43,7 @@ Classification problems were considered in the first section of this report. In 
 
 \par The Laplacian matrix captures a lot of information about the graph such as the number of connected components (which equals the multiplicity of the eigenvalue $\lambda=0$). Related to this number is the property that if the data is sorted according to cluster membership the similarity matrix becomes block-diagonal. Such depictions are used in the figures above. 
 
-\par \textit{Kernel spectral clustering (KSC)} reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. 
+\par Kernel spectral clustering (KSC) reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. 
 
 \begingroup
 \setlength{\columnsep}{0.8cm}
@@ -251,7 +251,7 @@ In the case of fixed-sized LS-SVMs $\gamma$, the type of kernel and its paramete
 
 \fakesubsubsection{California housing dataset}{}
 
-The California housing dataset contains information about block groups in California, for about 30 million people in total. Features include such things as median income, mean number of rooms in houses, ... and the dependent variable is the median house value (or its logarithm, rather). In other words, a 9-dimensional regression problem. The linear dependences (correlation coefficients) of each feature with the median house value are shown below in table \ref{calicorrcoef}. Median income correlates most strongly. It looks like the `ocean proximity' attribute has been removed as it is a text attribute.
+The California housing dataset contains information about block groups in California, spanning a population of about 30 million people in total. The 8 features include such things as median income, mean number of rooms in houses, ... and the dependent variable is the median house value. In other words, a 9-dimensional regression problem. The linear dependences (correlation coefficients) of each feature with the median house value are shown below in table \ref{calicorrcoef}. Median income correlates most strongly. It looks like the `ocean proximity' attribute has been removed as it is a text attribute.
 
 \begingroup
 \begin{wraptable}{r}{0.5\textwidth}
@@ -279,11 +279,11 @@ The California housing dataset contains information about block groups in Califo
 
 \endgroup
 
-\par Initial experiments obtained by running the provided code gave an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not shown here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used and normalisation was disabled to facilitate interpretability. The results showed the average error to be about 52-53k. Without the median house values this dropped to about 45k.
+\par Initial experiments obtained by running the provided code resulted in an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not shown here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used and normalisation of the dependent variable was disabled to facilitate interpretability. The results showed the average error to be about 88k. Without the median house values this dropped by about 10k. For polynomial kernels the average mean absolute error turned out to be about 89k. At all times, tuned parameters were used.
 
 \begingroup
 \begin{wrapfigure}{r}{0.45\textwidth}
-\vspace{-0.6cm}
+\vspace{-1cm}
 \centering
 \includegraphics[width=0.9\linewidth]{../src/figures/fssvm/california_hist_1}\hfil
 %\includegraphics[width=0.45\textwidth]{../src/figures/fssvm/california_hist_6}
@@ -293,11 +293,48 @@ The California housing dataset contains information about block groups in Califo
 \label{calipricey}
 \end{wrapfigure}
 
-\par Dan nog snel Colab gebruiken met ANOVA kernel om te zien of dat de moeite is, ook ARD gebruiken om te zien of bepaalde features beter zijn.
+%\par The average time estimates, number of support vectors and error estimates turned out to be just the same as always ; the $\ell_0$ post-processing tends to reduce the number of support vectors without affecting computational complexity much while the error tends to increase a tad (but not always).
+
+\par There's an other way to tackle large-scaled problems that is a little more straightforward, and that is to split the dependent variable into intervals and create a so-called committee network. After these are tuned and trained they can be combined in a linear or even a non-linear way. The latter is generally applied through the use of a multi-layer perceptron (MLP).
+
+\par This approach was also toyed with using the linear approach outlined in \textit{Least-Squares Support Vector Machines} (Suykens, 2003). Where the following covariance matrix is calculated :
+$$C_{ij}=\frac{1}{N}\sum_{k=1}^N[f_i(x_k)-y_k]\cdot[f_j(x_k)-y_k]$$
+Then the weights for each model were found through the following formula : 
+$$\beta = \frac{C^{-1}\cdot 1_{\nu}}{1_{\nu}^T\cdot C^{-1}\cdot 1_{\nu}}\quad\text{where}\quad 1_{\nu} = [1\ 1\ ... 1]^T$$
+The validity of the implementation was tested by re-doing the regression on a noisy \texttt{sinc} problem the results of which are shown in figure \ref{committeesinc}.
+
+\endgroup
+
+\begingroup
+\setlength{\columnsep}{0.8cm}
+\setlength{\intextsep}{0.5cm}
+\begin{wrapfigure}{r}{.4\textwidth}
+\vspace{-1.0cm}
+\begin{minipage}{\linewidth}
+    \centering\captionsetup[subfigure]{justification=centering}
+\includegraphics[width=\linewidth]{../src/figures/committee/sinc_2_models}
+    \caption*{$\#\ \text{models} = 2$}
+\includegraphics[width=\linewidth]{../src/figures/committee/sinc_4_models}
+    \caption*{$\#\ \text{models} = 4$}
+\includegraphics[width=\linewidth]{../src/figures/committee/sinc_8_models}
+    \caption*{$\#\ \text{models} = 8$}
+\end{minipage}
+\caption{Regression on the \texttt{sinc} function using committee networks with a varying number of models. Prediction in red, \texttt{sinc} function in green, noisy \texttt{sinc} in blue.}
+\label{committeesinc}
+\end{wrapfigure}
+
+\par The committee network improved upon the FS LS-SVM approach when 4 models were used, having a mean absolute error of 42937.08 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this.
+
+\par What became apparent is that the standardisation procedure both in the case of the fixed-sized LS-SVMs as well as the committee network appeared to greatly reduce predictive power such that without it the FS LS-SVMs achieved a mean absolute of around 52k. When standardisation was used for the committee network mean absolute error rates would typically rise above 60k. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
+
+\par A limited experiment using an MLP with as inputs the outputs of the SVM models was tried as well. This to obtain a non-linear combination. The model was trained with the Adam optimiser using a 75/25\% train \& validation split and the results turned out to be comparable to the linear approach as the mean absolute error turned out to be about 47k.
+
+\par Of course none of these models are anywhere near close to perfect so many improvements could be obtained through further experimentation or even by using entirely different frameworks altogether.
 
 \endgroup
 
 \begin{figure}[!htb]
+\vspace{-0.5cm}
 \centering
 \begin{minipage}{\textwidth}
         \centering
