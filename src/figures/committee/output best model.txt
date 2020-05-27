@@ -1,0 +1,149 @@
+
+   Determine initial tuning parameters for simplex...: # cooling cycle(s) 1
+  |-                                              -|
+  ************************************************** done
+
+ 1. Coupled Simulated Annealing results:  [gam]         1362.5912
+                                          [sig2]        83.6687
+                                          F(X)=         3458232576.7193
+ 
+ TUNELSSVM: chosen specifications:
+ 2. optimization routine:           simplex
+    cost function:                  crossvalidatelssvm
+    kernel function                 RBF_kernel
+ 
+
+ 3. starting values:                   1362.5912      83.668677
+
+ Iteration   Func-count    min f(x)    log(gamma)    log(sig2)    Procedure
+
+     1           3     3.458233e+09     7.2171        4.4269      initial 
+     2           7     3.458233e+09     7.2171        4.4269      shrink 
+     3           9     3.458233e+09     7.2171        4.4269      contract inside 
+     4          11     3.458233e+09     7.2171        4.4269      contract outside 
+     5          13     3.458233e+09     7.2171        4.4269      contract inside 
+     6          15     3.458233e+09     7.2171        4.4269      contract outside 
+     7          17     3.458233e+09     7.2171        4.4269      contract inside 
+     8          18     3.458233e+09     7.2171        4.4269      reflect 
+     9          19     3.458233e+09     7.2171        4.4269      reflect 
+    10          21     3.457720e+09     6.7800        4.2980      expand 
+    11          23     3.457720e+09     6.7800        4.2980      contract inside 
+    12          25     3.457720e+09     6.7800        4.2980      contract inside 
+    13          27     3.457495e+09     6.3289        4.1874      expand 
+optimisation terminated sucessfully (MaxFunEvals criterion)
+
+Simplex results: 
+X=560.538996   65.853723, F(X)=3.457495e+09 
+
+Obtained hyper-parameters: [gamma sig2]: 560.539      65.85372
+
+   Determine initial tuning parameters for simplex...: # cooling cycle(s) 1
+  |-                                              -|
+  ************************************************** done
+
+ 1. Coupled Simulated Annealing results:  [gam]         17.4523
+                                          [sig2]        14.3559
+                                          F(X)=         3652237308.7115
+ 
+ TUNELSSVM: chosen specifications:
+ 2. optimization routine:           simplex
+    cost function:                  crossvalidatelssvm
+    kernel function                 RBF_kernel
+ 
+
+ 3. starting values:                   17.4523      14.3559
+
+ Iteration   Func-count    min f(x)    log(gamma)    log(sig2)    Procedure
+
+     1           3     3.652237e+09     2.8595        2.6642      initial 
+     2           5     3.652237e+09     2.8595        2.6642      contract inside 
+     3           6     3.652237e+09     2.8595        2.6642      reflect 
+     4          10     3.649253e+09     3.4595        2.6642      shrink 
+     5          12     3.649253e+09     3.4595        2.6642      contract inside 
+     6          14     3.647403e+09     3.0845        2.8142      reflect 
+     7          16     3.646290e+09     3.4782        2.7767      contract outside 
+     8          18     3.645896e+09     3.1923        2.8610      contract outside 
+     9          20     3.645224e+09     3.4606        2.8212      contract outside 
+    10          22     3.645196e+09     3.2506        2.8733      contract inside 
+    11          24     3.644770e+09     3.4373        2.8404      contract outside 
+    12          26     3.644770e+09     3.4373        2.8404      contract inside 
+optimisation terminated sucessfully (MaxFunEvals criterion)
+
+Simplex results: 
+X=31.102279   17.122277, F(X)=3.644770e+09 
+
+Obtained hyper-parameters: [gamma sig2]: 31.1023      17.1223
+
+   Determine initial tuning parameters for simplex...: # cooling cycle(s) 1
+  |-                                              -|
+  ************************************************** done
+
+ 1. Coupled Simulated Annealing results:  [gam]         12.8337
+                                          [sig2]        8.0429
+                                          F(X)=         4394135754.4638
+ 
+ TUNELSSVM: chosen specifications:
+ 2. optimization routine:           simplex
+    cost function:                  crossvalidatelssvm
+    kernel function                 RBF_kernel
+ 
+
+ 3. starting values:                   12.8337      8.04293
+
+ Iteration   Func-count    min f(x)    log(gamma)    log(sig2)    Procedure
+
+     1           3     4.394136e+09     2.5521        2.0848      initial 
+     2           7     4.394136e+09     2.5521        2.0848      shrink 
+     3          11     4.394136e+09     2.5521        2.0848      shrink 
+     4          15     4.394136e+09     2.5521        2.0848      shrink 
+     5          19     4.393843e+09     2.6271        2.0848      shrink 
+     6          21     4.392830e+09     2.6646        2.1973      expand 
+     7          22     4.392830e+09     2.6646        2.1973      reflect 
+     8          24     4.392451e+09     2.7771        2.2348      reflect 
+     9          26     4.392451e+09     2.7771        2.2348      contract inside 
+optimisation terminated sucessfully (MaxFunEvals criterion)
+
+Simplex results: 
+X=16.071970   9.344554, F(X)=4.392451e+09 
+
+Obtained hyper-parameters: [gamma sig2]: 16.072      9.34455
+
+   Determine initial tuning parameters for simplex...: # cooling cycle(s) 1
+  |-                                              -|
+  ************************************************** done
+
+ 1. Coupled Simulated Annealing results:  [gam]         239.119
+                                          [sig2]        82.6298
+                                          F(X)=         3312034282.2751
+ 
+ TUNELSSVM: chosen specifications:
+ 2. optimization routine:           simplex
+    cost function:                  crossvalidatelssvm
+    kernel function                 RBF_kernel
+ 
+
+ 3. starting values:                   239.119      82.62979
+
+ Iteration   Func-count    min f(x)    log(gamma)    log(sig2)    Procedure
+
+     1           3     3.310946e+09     6.6770        4.4144      initial 
+     2           5     3.310946e+09     6.6770        4.4144      contract inside 
+     3           7     3.310946e+09     6.6770        4.4144      contract outside 
+     4           9     3.310946e+09     6.6770        4.4144      contract inside 
+     5          11     3.305024e+09     6.0020        4.5644      reflect 
+     6          12     3.305024e+09     6.0020        4.5644      reflect 
+     7          14     3.304261e+09     6.5270        4.7144      reflect 
+     8          18     3.299080e+09     6.8645        4.6394      shrink 
+     9          19     3.299080e+09     6.8645        4.6394      reflect 
+    10          21     3.299080e+09     6.8645        4.6394      contract inside 
+    11          23     3.298762e+09     6.6160        4.6112      contract outside 
+    12          27     3.298731e+09     6.7402        4.6253      shrink 
+optimisation terminated sucessfully (MaxFunEvals criterion)
+
+Simplex results: 
+X=845.765947   102.034170, F(X)=3.298731e+09 
+
+Obtained hyper-parameters: [gamma sig2]: 845.7659      102.0342
+Error on training set = 40983.60862
+Error on test set = 42937.07518
+>> 
