@@ -195,7 +195,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 
 \par The provided code reduces the dataset's size to 700 samples in which only 5 of the classes are present (more than 81\% being the majority class), presumably because of the long runtimes. It does not seem to handle multi-class problems per se but still makes use of the sign function for predictions effectively treating the problem as a sort one-versus-all binary classification problem (though because the class labels aren't set to minus one it's not even exactly that). Therefore initial results see a fairly large error rate which tend to get worse than the majority rule. However, from these results which are shown in figure \ref{shuttleestimates} it can be seen that the $\ell_0$ post-processing step does not increase the required time (nor does windowing), which mirrors the results in the study proposing these methods. The required time across values for $k$ (which specifies the number of prototype vectors indirectly through the relation $M=k\cdot\sqrt{N}$) matches the theoretical complexity $\mathcal{O}(k^2\cdot N^2)$. The post-processing also makes the number of support vectors drop, and the error tends to increase a bit.
 
-\par In further experiments instead of using the provided set, at least 3000 samples were picked (such that class 3 was represented more than once and stratification could be applied). For parameter tuning 5-fold cross-validation was applied (minimising misclassification), whereas the evaluation was done by creating a 80/20\% training \& test set split through stratified sampling.
+\par In further experiments instead of using the provided set, at least 3000 samples were picked (such that class 3 was represented more than once and stratification could be applied). For parameter tuning 5-fold cross-validation was applied (minimising misclassification), whereas the evaluation was done by creating a 75/25\% training \& test set split through stratified sampling.
 
 %\par For training, validation and evaluation a training set of 29.000 - and training and validation sets of both 14.500 samples were used (split randomly by stratification).
 
@@ -210,7 +210,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 \label{shuttlehist}
 \end{figure}
 
-To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing the majority class, then proceeds to distinguish each of the next class taking the largest classes first. In other words ; class 1 was compared with the others, a model was built on that basis, then for all samples not belonging to class 1 this same procedure was applied, this time for the second largest class (class 4). And so on until only two classes remain. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, - number of support vectors and - time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
+To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing the majority class, then proceeds to distinguish each of the next classes taking the largest classes first. In other words ; class 1 was compared with the others, a model was built on that basis, then for all samples not belonging to class 1 this same procedure was applied, this time for the second largest class (class 4). And so on until only two classes remain. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, - number of support vectors and - time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
 
 \begin{table}[htb]
 \centering
@@ -227,13 +227,13 @@ FS LS-SVM multiclass ($\ell_0$ reduced, $k=4$) & 99.74\% & 33.09s & 815.67 \\
 FS LS-SVM multiclass ($\ell_0$ reduced, $k=6$) & 99.70\% & 87.72s & 1804.00 \\
 FS LS-SVM multiclass ($\ell_0$ reduced, $k=8$) & 99.67\% & 158.27s & 2791.67 \\
 \end{tabular}
-\caption{Comparison of some methods for classification of the Shuttle dataset. Averaged over 3 runs. Tuning the models was done through 5-fold cross-validation and evaluation was done on 25\% of the data (14.494 samples). Classes 6 \& 7 were disregarded. For kNN the algorithm keeps on degrading as $k$ (the number of neighbours) increases. At $k=4$ it tends to start performing worse than the fixed-sized LS-SVMs. Note that the number of support vectors is for all SVMs together and the time for tuning wasn't measured. $^{\dagger}$Only 1 run was used for this setting due to long runtimes.}
+\caption{Comparison of some methods for classification of the Shuttle dataset. Averaged over 3 runs. Tuning the models was done through 5-fold cross-validation and evaluation was done on 25\% of the data (14.494 samples). RBF kernels were used (linear models reached an accuracy of a little above 90\%). Classes 6 \& 7 were disregarded. For kNN the algorithm keeps on degrading as $k$ (the number of neighbours) increases. At $k=4$ it tends to start performing worse than the fixed-sized LS-SVMs. Note that the number of support vectors is for all SVMs together and the time for tuning wasn't measured. $^{\dagger}$Only 1 run was used for this setting due to long runtimes.}
 \label{shuttlemulticomparison}
 \end{table}
 
-A general trend that was seen in the experiments is that increasing $k$ tends to decrease the error rate up until a certain point. The results speak for themselves and are proportional to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
+A general trend that was seen in all experiments is that increasing $k$ tends to decrease the error rate up until a certain point (usually until $k=6$). The results speak for themselves and are proportional to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
 
-\par Ironically a simple $k$-nearest-neighbor (kNN) search using the \texttt{MATLAB} function \texttt{knnsearch} performed better for low values of $k$ (this time denoting the number of neighbours that are considered). A bit surprising maybe, though the dataset is not particularly hard to classify. On the flipside, kNN takes in more memory as the training set is quite large in comparison with any of the measured number of support vectors. And it cannot be tuned as much ; only $k$ and the distance function can be.
+\par Ironically a simple $k$-nearest-neighbor (kNN) search using the \texttt{MATLAB} function \texttt{knnsearch} performed better for low values of $k$ (this time denoting the number of neighbours that are considered). A bit surprising maybe, though the dataset is not particularly hard to classify and kNN can be quite powerful due to its complex decision boundaries. On the flipside it takes in more memory as the training set is quite large in comparison with any of the measured number of support vectors. And it cannot be tuned as much ; only $k$ and the distance function can be.
 
 \begin{figure}[!htb]
 \centering
@@ -248,6 +248,51 @@ A general trend that was seen in the experiments is that increasing $k$ tends to
 \end{figure}
 
 In the case of fixed-sized LS-SVMs $\gamma$, the type of kernel and its parameters, $k$ and even some other things such as the tuning algorithm can be changed. However, because of costly tuning processes no more experiments were done. 
+
+\fakesubsubsection{California housing dataset}{}
+
+The California housing dataset contains information about block groups in California, for about 30 million people in total. Features include such things as median income, mean number of rooms in houses, ... and the dependent variable is the median house value (or its logarithm, rather). In other words, a 9-dimensional regression problem. The linear dependences (correlation coefficients) of each feature with the median house value are shown below in table \ref{calicorrcoef}. Median income correlates most strongly. It looks like the `ocean proximity' attribute has been removed as it is a text attribute.
+
+\begingroup
+\begin{wraptable}{r}{0.5\textwidth}
+%\vspace{0.6cm}
+\centering
+\begin{tabular}{c|c}
+\textit{Feature} & \textit{Correlation}\\\hline
+\textit{Longitude} & -0.04597\\
+\textit{Latitude} & -0.14416\\
+\textit{Housing Median Age} & 0.10562\\
+\textit{Total Rooms} & 0.13415\\
+\textit{Total Bedrooms} & 0.05059\\
+\textit{Population} & -0.02465\\
+\textit{Households} & 0.06584\\
+\textit{Median Income} & 0.68808\\
+\textit{Median House Value} & 1.00000
+\end{tabular}
+\caption{Correlation coefficients between any feature and the dependent variable (median house value).}
+\label{calicorrcoef}
+\end{wraptable}
+
+\par There are outliers in the mean house value distribution. These could be removed or a reweighing scheme could be used. It's unclear why they're there. Maybe a cap was set at 500k and anything above that was rounded down. In any case it's very unlikely that this price range occurs much more frequently than most others.
+
+\par For testing purposes a test set was generated by doing a random split. This turned out to be fairly representative (based on the means of the variables for the train and the test set as well as visual inspection of the resulting histograms). There are more rigorous ways to do stratified sampling for multivariate regression problems which are not dealt with here.
+
+\par Initial experiments with just running the provided code gave an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not shown here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used to facilitate interpretability. The results showed the average error to be about 52-53k.
+
+\endgroup
+
+\begingroup
+\begin{wrapfigure}{r}{0.45\textwidth}
+\centering
+\includegraphics[width=0.9\linewidth]{../src/figures/fssvm/california_hist_1}\hfil
+%\includegraphics[width=0.45\textwidth]{../src/figures/fssvm/california_hist_6}
+\captionof{figure}{Histogram for the median house value.}
+\label{californiahist}
+\end{wrapfigure}
+
+\par Dan nog snel Colab gebruiken met ANOVA kernel om te zien of dat de moeite is, ook ARD gebruiken om te zien of bepaalde features beter zijn.
+
+\endgroup
 
 \begin{figure}[!htb]
 \centering
@@ -282,7 +327,3 @@ In the case of fixed-sized LS-SVMs $\gamma$, the type of kernel and its paramete
 \caption{Boxplots for estimates of the error, number of support vectors and time needed to generate FS-SVMs with or without $\ell_0$ norm post-processing procedure. Estimates are based on results on a test set (20\% of 3000 samples, obtained through stratified sampling). Estimates based on 10-fold cross-validation are about equivalent. The dataset is restricted to 3000 samples to avoid long runtimes. These belong to the first 5 classes. At all times an RBF kernel is used which has automatically tuned parameters. The increase in time requirements for increasing value of $k$ corresponds to the theoretical complexity $\mathcal{O}(k^2N^2)$.}
 \label{shuttleestimates}
 \end{figure}
-
-\fakesubsubsection{California housing dataset}{}
-
-The California housing dataset contains information about block groups in California, for about 30 million people in total. Features include such things as median income, mean number of rooms in houses, ... and the dependent variable is the median house value (or its logarithm, rather). In other words, a 10-dimensional regression problem. 
