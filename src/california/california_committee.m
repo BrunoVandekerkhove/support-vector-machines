@@ -8,10 +8,11 @@ addpath(genpath('./california'))
 close all
 %% Load data
 data = load('california.dat', '-ascii');
-data = data(1:1600,:);
+%data = data(1:1600,:); % select subset
 sinc_demo = 0;
 if sinc_demo
-    X = (-3:0.0025:3)'; 
+    rng('default')
+    X = (-3:0.002:3)'; 
     X = X(randperm(length(X)));
     Y = sinc(X) + 0.1*randn(length(X), 1);
     Xtrain = X(1:1200,:);
@@ -32,12 +33,18 @@ end
 normal_price_indices = data(:,end) < 500000;
 high_price_indices = data(:,end) >= 500000;
 %% Prepare data
-% Normalize (?)
-%Xtrain = (Xtrain - min(Xtrain)) ./ (max(Xtrain) - min(Xtrain));
-%Xtest = (Xtest - min(Xtest)) ./ (max(Xtest) - min(Xtest));
-% Standardize (?)
-%[Xtrain,Ytrain,Xtest,Ytest] = initial(Xtrain, Ytrain, 'f', Xtest, Ytest); % standardization
-%[Xtrain,~,Xtest,~] = initial(Xtrain, Ytrain, 'f', Xtest, Ytest); % standardization (only features)
+preprocess = 1; % 1 = standardize, 2 = normalize
+if preprocess == 1
+    % zero mean and unit variance
+    ground_truth = Ytest;
+    [Xtrain,Ytrain,Xtest,Ytest] = initial(Xtrain, Ytrain, 'f', Xtest, Ytest); % standardization
+elseif preprocess == 2
+    % normalise or standardize only features
+    Xtrain = (Xtrain - min(X)) ./ (max(X) - min(X));
+    Xtest = (Xtest - min(X)) ./ (max(X) - min(X));
+    Ytrain = (Ytrain - min(Y)) ./ (max(Y) - min(Y));
+    Ytest = (Ytest - min(Y)) ./ (max(Y) - min(Y));
+end
 %% Committee Network
 type_svm = 0;
 nb_partitioning = 2; % times to divide training set in 2 sets
@@ -81,20 +88,33 @@ end
 vec = ones(P,1);
 %beta = (inv(C)*vec) / (vec'*inv(C)*vec);
 beta = ((C \ vec) / (vec' / C * vec))';
-%%
+%% Measure error
 train_answer = sum(beta .* train_sim(:,:), 2);
 test_answer = sum(beta .* test_sim(:,:), 2);
 train_error = mae(train_answer - Ytrain);
 test_error = mae(test_answer - Ytest);
+train_error_mse = mse(train_answer - Ytrain);
+test_error_mse = mse(test_answer - Ytest);
 fprintf('Error on training set = %.5f\n', train_error);
 fprintf('Error on test set = %.5f\n', test_error);
+fprintf('Error on training set (mse) = %.5f\n', train_error_mse);
+fprintf('Error on test set (mse) = %.5f\n', test_error_mse);
+if preprocess == 1
+    %mae(ground_truth - test_answer * std(Y) + mean(Y))
+end
 %% Visualize
 if sinc_demo
     figure
     hold on
     plot(Xtest,test_answer,'r.', 'Color', [0.6740, 0.2, 0.1880]);
     plot(Xtest,Ytest,'b.', 'Color', [0, 0.4470, 0.7410]);
-    plot(Xtest,sinc(Xtest),'g.', 'Color', [0.4470, 0.7410, 0]);
+    if preprocess == 1
+        plot((X-mean(X))/std(X),(sinc(X)-mean(Y))/std(Y),'g.', 'Color', [0.4470, 0.7410, 0]);
+    elseif preprocess == 2
+        plot((X-min(X))/(max(X)-min(X)),(sinc(X)-min(Y))/(max(Y)-min(Y)),'g.', 'Color', [0.4470, 0.7410, 0]);
+    else
+        plot(Xtest,sinc(Xtest),'g.', 'Color', [0.4470, 0.7410, 0]);
+    end
     legend('committee','dataset','dataset-noise')
 end
 %% MLP approach
@@ -120,7 +140,10 @@ options = trainingOptions('adam', ...
 net = trainNetwork(XtrainMLP, YtrainMLP, layers, options);
 %% MLP prediction
 YtestMLP = predict(net, test_sim');
-fprintf('MLP MAE for test set = %.5f\n', mae(YtestMLP-Ytest'));
+fprintf('MLP MAE for test set = %.5f\n', mse(YtestMLP-Ytest'));
+if preprocess == 1
+    % mae(YtestMLP' * std(Y) + mean(Y) - ground_truth)
+end
 %% Functions
 function partitions = partition(X, Y, i)
     c = cvpartition(Y, 'HoldOut', 0.5, 'Stratify', true);
