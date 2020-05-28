@@ -80,6 +80,7 @@ if (function_type=='f' && (~strcmp(process_type,'FullL0_norm')) && (~strcmp(proc
         err = 0.0;
         csvwrite('FS-LSSVMpred.mat',testYh);
     end;
+    save('pred.mat', 'testYh')
     %Note all the support vectors might not be part of the training set 
     subset = subset(1:nb_sv,:);
     svfeatures = features(subset,:);
