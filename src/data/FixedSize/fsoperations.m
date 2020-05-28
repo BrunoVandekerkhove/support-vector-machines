@@ -35,7 +35,7 @@ function [errmatrix,svmatrix,timematrix] = fsoperations(X,Y,function_type,kernel
 %       svmatrix = Contains support vectors for 10 randomizations
 %       timematrix = Contains the time complexity for 10 randomizations
 
-addpath('../LSSVMlab');
+%addpath('../LSSVMlab');
 
 %Default allocations
 if (isempty(kernel_type))
@@ -65,7 +65,7 @@ if (function_type=='f')
     N=length(X);
     
     %Perform k fold cross-validation
-    folds=5; % 
+    folds=10; % 
     folds1=1; % 
     block_size = floor(N/folds1);
     process_type=user_process;
@@ -401,7 +401,8 @@ elseif (isempty(process_type(strcmp(process_type(:),'WINDOW')))&&isempty(process
 end;
 folds1=1;
 %par
-for j=1:10
+global repetitions
+for j=1:repetitions
     avgerr=0.0*avgerr;
     %Once obtained the best gamma and sigma perform the 10-fold cross
     %validation to verify the results
