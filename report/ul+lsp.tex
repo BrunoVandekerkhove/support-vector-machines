@@ -279,7 +279,7 @@ The California housing dataset contains information about block groups in Califo
 
 \endgroup
 
-\par Initial experiments obtained by running the provided code resulted in an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not visualised here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used inversion of the standardisation procedure (in \texttt{initial.m}) was applied to facilitate interpretability. The results showed the average error to be about 88k. Without the median house values this dropped by about 10k. For polynomial kernels the average mean absolute error turned out to be about 89k. At all times, tuned parameters were used.
+\par Initial experiments obtained by running the provided code resulted in an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not visualised here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used inversion of the standardisation procedure (in \texttt{initial.m}) was applied to facilitate interpretability. The results showed the average error to be about 42k. Without the median house values of at least 500k this dropped by about 3-4k. For polynomial kernels the average mean absolute error turned out to be comparable. At all times, tuned parameters were used.
 
 \begingroup
 \begin{wrapfigure}{r}{0.45\textwidth}
@@ -327,7 +327,7 @@ The validity of the implementation was tested by re-doing the regression on a no
 
 \par What became apparent is that the standardisation procedure (in \texttt{initial.m}) in the case of the committee network sometimes reduced predictive power. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
 
-\par A limited experiment using an MLP with as inputs the outputs of the SVM models was tried as well. This to obtain a non-linear combination. The model was trained with the Adam optimiser using a 75/25\% train \& validation split and the results turned out to be comparable to the linear approach as the mean absolute error turned out to be about 42k. This may not be representative as once again, only one run was done.
+\par A limited experiment using an MLP with as inputs the outputs of the SVM models was tried as well (using the Deep Learning toolbox in \texttt{MATLAB} which is rather easy to use). This to obtain a non-linear combination. The model was trained with the Adam optimiser using a 75/25\% train \& validation split and the results turned out to be comparable to the linear approach as the mean absolute error turned out to be about 42k. This may not be representative as once again, only one run was done.
 
 \par Finally, ARD was quickly tried but no features were removed. Of course none of the obtained models are anywhere near close to perfect so many improvements could be obtained through further experimentation or even by using entirely different frameworks altogether. 
 
