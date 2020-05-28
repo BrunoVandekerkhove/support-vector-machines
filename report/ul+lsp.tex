@@ -39,12 +39,11 @@ The errors represent the variance after projection which is to be maximised. Her
 
 Classification problems were considered in the first section of this report. In a classification setting a model is constructed which is made to predict what class some data point belongs to. These models are trained in a supervised way i.e. there's an annotated training set and test set which are used to determine appropriate parameters for the model and for evaluating it. In a clustering setting the number of classes $k$ is not necessarily set beforehand but can be tuned. A model is trained in an unsupervised manner such that it clusters data points on the basis of some similarity measure. 
 
-\par Spectral clustering in particular deals with finding a minimal cut of a similarity graph (a weighted \& undirected graph) rather than finding a decision boundary which separates classes. Since finding a balanced yet minimal cut is NP-hard a relaxed version is considered instead. The solution of the relaxed version is based on the eigendecomposition of the Laplacian matrix of the graph such that the data points can be embedded in an eigenspace on which a clustering algorithm like \textit{k-means} can be applied. 
+\par Spectral clustering in particular deals with finding a minimal cut of a similarity graph (a weighted \& undirected graph) rather than finding a decision boundary which separates classes. Since finding a balanced yet minimal cut is NP-hard a relaxed version (where the indicators can be real) is considered instead. The solution of the relaxed version is based on the solution of a generalised eigenvalue problem after which the data points can be embedded in an eigenspace on which a clustering algorithm like \textit{k-means} can be applied. In the case of the binary toy dataset dealt with in this section the Fielder vector is used in conjunction with the \texttt{sign} function.
 
-\par The Laplacian matrix captures a lot of information about the graph such as the number of connected components (which equals the multiplicity of the eigenvalue $\lambda=0$). Related to this number is the property that if the data is sorted according to cluster membership the similarity matrix becomes block-diagonal. Such depictions are used in the figures above. 
+\par Kernel spectral clustering (KSC) reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. The bias term plays the role of a centering operation which is not trivial like in the case of kernel PCA. It is not used in the provided code snippets which causes some issues with thresholding ($k$-means could be used or manual inspection in simple cases).
 
-\par Kernel spectral clustering (KSC) reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. 
-
+\clearpage
 \begingroup
 \setlength{\columnsep}{0.8cm}
 \setlength{\intextsep}{0.5cm}
@@ -157,6 +156,7 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 \end{figure}
 
 \begin{figure}[h]
+\vspace{-0.5cm}
 \centering
 %
 \subfloat[$\sigma^2=0.001$.]{
@@ -181,7 +181,7 @@ What was noted in the yin-yang toy dataset shown at the beginning of this sectio
 \includegraphics[width=0.4\textwidth]{../src/figures/spectral/rings_block_1000}
 \end{minipage}}\\
 %
-\caption{Clustering of a toy dataset consisting of two rings. KSC applied using a kernel with varying $\sigma^2$ values. When this bandwidth is too large the reach of influence of each data point becomes too large and the clustering becomes subpar.}
+\caption{Clustering of a toy dataset consisting of two rings. KSC was applied using a kernel with varying $\sigma^2$ values. When this bandwidth is too large the reach of influence of each data point becomes too large and the clustering becomes subpar. The block-diagonals that are shown are similarity (or affinity) matrices after they've been sorted based on cluster membership. The blue rings for $\sigma^2$ are due to poor clustering because of using the \texttt{sign} function to threshold. With a better threshold the clustering works fine. For even smaller bandwidths the clustering deteriorates again. Projections onto the principal subspace are supposed to be collinear in the case of ideal clustering and are not shown here.}
 \label{spectraltoy}
 \end{figure}
 
@@ -199,8 +199,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 
 %\par For training, validation and evaluation a training set of 29.000 - and training and validation sets of both 14.500 samples were used (split randomly by stratification).
 
-\vspace{0.5cm}
-\begin{figure}[htb]
+\begin{figure}[!htb]
 \centering
 %
 \subfloat[First feature (time).]{\includegraphics[width=1.0\textwidth]{../src/figures/fssvm/shuttle_hist_1}}\\
@@ -210,7 +209,7 @@ The Shuttle dataset has 58.000 train or test samples. It's a multi-class classif
 \label{shuttlehist}
 \end{figure}
 
-To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing the majority class, then proceeds to distinguish each of the next classes taking the largest classes first. In other words ; class 1 was compared with the others, a model was built on that basis, then for all samples not belonging to class 1 this same procedure was applied, this time for the second largest class (class 4). And so on until only two classes remain. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, - number of support vectors and - time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
+To get more meaningful error estimates and an overall comparison between a fixed-size LS-SVM with or without sparsification a multi-class model was built which starts with distinguishing the majority class, then proceeds to distinguish each of the next classes taking the largest classes first. In other words ; class 1 was compared with the others, a model was built on that basis, then for all samples not belonging to class 1 this same procedure was applied, this time for the second largest class (class 4). And so on until only two classes remain. The whole dataset was used except for classes 6 \& 7 as misclassifying them would barely affect the accuracy anyways. In reality the cost of these misclassifications could be considered more serious which would call for an other approach (the ROC curve can always be used during validation to pick useful operating points). Average errors, number of support vectors and time requirements are shown in figure \ref{shuttlemultiestimates} and a short comparison of accuracy with some other approaches is shown below.
 
 \begin{table}[htb]
 \centering
@@ -231,7 +230,7 @@ FS LS-SVM multiclass ($\ell_0$ reduced, $k=8$) & 99.67\% & 158.27s & 2791.67 \\
 \label{shuttlemulticomparison}
 \end{table}
 
-A general trend that was seen in all experiments is that increasing $k$ tends to decrease the error rate up until a certain point (usually until $k=6$). The results speak for themselves and are proportional to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
+\par A general trend that was seen in all experiments is that increasing $k$ tends to decrease the error rate up until a certain point (usually until $k=6$). The results speak for themselves and are proportional to the one-versus-the-rest approach discussed previously when it comes to computational time and the number of support vectors.
 
 \par Ironically a simple $k$-nearest-neighbor (kNN) search using the \texttt{MATLAB} function \texttt{knnsearch} performed better for low values of $k$ (this time denoting the number of neighbours that are considered). A bit surprising maybe, though the dataset is not particularly hard to classify and kNN can be quite powerful due to its complex decision boundaries. On the flipside it takes in more memory as the training set is quite large in comparison with any of the measured number of support vectors. And it cannot be tuned as much ; only $k$ and the distance function can be.
 
@@ -308,7 +307,7 @@ The validity of the implementation was tested by re-doing the regression on a no
 \begingroup
 \setlength{\columnsep}{0.8cm}
 \setlength{\intextsep}{0.5cm}
-\begin{wrapfigure}{r}{.4\textwidth}
+\begin{wrapfigure}{r}{.45\textwidth}
 \vspace{-1.0cm}
 \begin{minipage}{\linewidth}
     \centering\captionsetup[subfigure]{justification=centering}
@@ -323,7 +322,7 @@ The validity of the implementation was tested by re-doing the regression on a no
 \label{committeesinc}
 \end{wrapfigure}
 
-\par The committee network performed compa upon the FS LS-SVM approach when 4 models were used, having a mean absolute error of 38.460 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. In practice to compare models it's best to have many runs and do a t-test or something equivalent (possibly a non-parametric test depending on the assumptions that are deemed appropriate). More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this. In general splitting the dataset into 4 partitions appeared to perform best.
+\par The committee network performed compa upon the FS LS-SVM approach when 4 models were used, having a mean absolute error of 38.460 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. In practice to compare models it's best to have many runs and do a t-test or something equivalent (possibly a non-parametric test depending on the assumptions that are deemed appropriate). More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this. In general splitting the dataset into 4 partitions appeared to perform best. At all times these partitions were generated randomly, not by taking fixed intervals (as per the recommendations).
 
 \par What became apparent is that the standardisation procedure (in \texttt{initial.m}) in the case of the committee network sometimes reduced predictive power. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
 
