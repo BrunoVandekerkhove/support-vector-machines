@@ -39,7 +39,7 @@ The errors represent the variance after projection which is to be maximised. Her
 
 Classification problems were considered in the first section of this report. In a classification setting a model is constructed which is made to predict what class some data point belongs to. These models are trained in a supervised way i.e. there's an annotated training set and test set which are used to determine appropriate parameters for the model and for evaluating it. In a clustering setting the number of classes $k$ is not necessarily set beforehand but can be tuned. A model is trained in an unsupervised manner such that it clusters data points on the basis of some similarity measure. 
 
-\par Spectral clustering in particular deals with finding a minimal cut of a similarity graph (a weighted \& undirected graph) rather than finding a decision boundary which separates classes. Since finding a balanced yet minimal cut is NP-hard a relaxed version (where the indicators can be real) is considered instead. The solution of the relaxed version is based on the solution of a generalised eigenvalue problem after which the data points can be embedded in an eigenspace on which a clustering algorithm like \textit{k-means} can be applied. In the case of the binary toy dataset dealt with in this section the Fielder vector is used in conjunction with the \texttt{sign} function.
+\par Spectral clustering in particular deals with finding a minimal cut of a similarity graph (a weighted \& undirected graph) rather than finding a decision boundary which separates classes. Since finding a balanced yet minimal cut is NP-complete a relaxed version (where the indicators can be real) is considered instead. The solution of the relaxed version is based on the solution of a generalised eigenvalue problem after which the data points can be embedded in an eigenspace on which a clustering algorithm like \textit{k-means} can be applied. In the case of the binary toy dataset dealt with in this section the Fielder vector is used in conjunction with the \texttt{sign} function.
 
 \par Kernel spectral clustering (KSC) reformulates spectral clustering as an LS-SVM, essentially boiling down to a weighted version of kernel PCA. Again, out-of-sample extensions become possible and one can apply it on large-scale problems. The bias term plays the role of a centering operation which is not trivial like in the case of kernel PCA. It is not used in the provided code snippets which causes some issues with thresholding ($k$-means could be used or manual inspection in simple cases).
 
@@ -66,7 +66,7 @@ Classification problems were considered in the first section of this report. In 
 \label{fixedsample}
 \end{wrapfigure}
 
-\par Experiments with an RBF kernel are shown in figure \ref{spectraltoy}. Since the similarity matrix is the Kernel function and $\sigma^2$ happens to control the contrast in similarity between data points a $\sigma^2$ value which is small leads to a single class as all points are considered similar while a larger $\sigma^2$ leads to poor clustering results.
+\par Experiments with an RBF kernel are shown in figure \ref{spectraltoy}. Since the similarity matrix is the Kernel function and $\sigma^2$ happens to control the contrast in similarity between data points a $\sigma^2$ value which is too small or too large leads to poor clustering results.
 
 \fakesubsection{Fixed-size LS-SVM}{}
 
@@ -83,6 +83,7 @@ Sometimes the amount of data that is being dealt with is too large such that som
 De-noising a quite noisy USPS dataset with classical PCA gives poor results at best (see figure \ref{usps_linear}). Kernel PCA with an RBF kernel manages to exploit the data much more and the results are a big improvement (see figure \ref{usps_kernel}).
 
 \endgroup
+\newpage
 
 What was noted in the yin-yang toy dataset shown at the beginning of this section can be observed again in figure \ref{uspsband} ; small bandwidths remove important information (such that some digits get reconstructed without noise but as the wrong number) while larger ones fail to de-noise and noise is re-introduced slowly but surely in the reconstructions. Eventually the results resemble that of classical, linear PCA.
 
@@ -278,7 +279,7 @@ The California housing dataset contains information about block groups in Califo
 
 \endgroup
 
-\par Initial experiments obtained by running the provided code resulted in an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not visualised here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was used inversion of the standardisation procedure (in \texttt{initial.m}) was applied to facilitate interpretability. The results showed the average error to be about 42k. Without the median house values of at least 500k this dropped by about 3-4k. For polynomial kernels the average mean absolute error turned out to be comparable. At all times, tuned parameters were used.
+\par Initial experiments obtained by running the provided code resulted in an \texttt{mse} of $0.31$ for RBF kernels and bad results for linear ones. The results are not visualised here as they're not very interpretable and the influence of $k$ on time - and memory complexity was discussed before. Instead of using the mean squared error the mean absolute error was determined through inversion of the standardisation procedure (in \texttt{initial.m})  to facilitate interpretability. The results showed the average error to be about 42k. Without the median house values of at least 500k this dropped by about 3-4k. For polynomial kernels the average mean absolute error turned out to be comparable. At all times, tuned parameters were used.
 
 \begingroup
 \begin{wrapfigure}{r}{0.45\textwidth}
@@ -322,7 +323,7 @@ The validity of the implementation was tested by re-doing the regression on a no
 \label{committeesinc}
 \end{wrapfigure}
 
-\par The committee network performed compa upon the FS LS-SVM approach when 4 models were used, having a mean absolute error of 38.460 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. In practice to compare models it's best to have many runs and do a t-test or something equivalent (possibly a non-parametric test depending on the assumptions that are deemed appropriate). More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this. In general splitting the dataset into 4 partitions appeared to perform best. At all times these partitions were generated randomly, not by taking fixed intervals (as per the recommendations).
+\par The committee network performed in a comparable way to the FS LS-SVM approach when 4 models were used, having a mean absolute error of 38.460 on the test set. However, due to the long runtime (a couple of minutes) no check for statistical significance (or even a simple average of the results) was determined. In practice to compare models it's best to have many runs and do a t-test or something equivalent (possibly a non-parametric test depending on the assumptions that are deemed appropriate). More tests were done on smaller subsets of the training data which showed that the results depended greatly on the parameters. The kernel parameters are always important but in this case also the number of models (which was taken to be a power of 2) greatly affected performance. Toy experiments on the \texttt{sinc} function shown here on the right visualise this. In general splitting the dataset into 4 partitions appeared to perform best. At all times these partitions were generated randomly, not by taking fixed intervals (as per the recommendations).
 
 \par What became apparent is that the standardisation procedure (in \texttt{initial.m}) in the case of the committee network sometimes reduced predictive power. This could be due to features with smaller ranges being less important or due to the normalisation (which brings the data to zero mean and unit variance, component-wise) not being sophisticated enough as it assumes independence of the features.
 
