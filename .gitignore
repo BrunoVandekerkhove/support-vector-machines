@@ -1,4 +1,7 @@
 .DS_Store
+python/venv/*
+python/pykernels/__pycache__/*
+python/pykernels/graph/__pycache__/*
 
 ## Minted
 *.pygtex
