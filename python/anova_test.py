@@ -6,7 +6,7 @@ from pykernels import *
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_california_housing
 
-if True:
+if False:
     dataset = fetch_california_housing()
     X = dataset.data
     X = X[1:15000,:]
