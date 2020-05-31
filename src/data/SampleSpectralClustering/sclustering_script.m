@@ -1,6 +1,7 @@
 clear;
+close all;
 
-for sig2 = 1.0 %[0.001, 0.005, 0.01, 0.02]
+for sig2 = 0.006 %[0.001, 0.005, 0.01, 0.02]
     
 load two3drings;        % load the toy example
 
@@ -14,7 +15,7 @@ K=kernel_matrix(X,'RBF_kernel',sig2);   %compute the RBF kernel (affinity) matri
 
 D=diag(sum(K));         % compute the degree matrix (sum of the columns of K)
 
-[U,lambda]=eigs(inv(D)*K,3);  % Compute the 3 largest eigenvalues/vectors using Lanczos
+[U,lambda]=eigs(inv(D)*K,800);  % Compute the 3 largest eigenvalues/vectors using Lanczos
                               % The largest eigenvector does not contain
                               % clustering information. For binary clustering,
                               % the solution is the second largest eigenvector.
@@ -38,33 +39,36 @@ proj=K*U(:,2:3);    % Compute the projections onto the subspace spanned by the s
 %title('Two interlaced rings in a 3D space');
 
 %subplot(1,2,2);
+figure
 scatter3(X(:,1),X(:,2),X(:,3),30,clust);
 %title('Clustering results');
-export_pdf(gcf, sprintf('spectral/rings_clusters_%.f', sig2*1000));
+%export_pdf(gcf, sprintf('spectral/rings_clusters_%.f', sig2*1000));
 
 %disp('<<<<<<<<<<<<Press any key>>>>>>>>>>>>>>');
 %pause;
 
 
-figure;
 %subplot(1,2,1);
 %imshow(K);
 %title('Kernel matrix of the original data');
 
 %subplot(1,2,2);
+figure
+imshow(imcomplement(K));
+figure
 imshow(imcomplement(Ksorted));
-export_pdf(gcf, sprintf('spectral/rings_block_%.f', sig2*1000));
+%export_pdf(gcf, sprintf('spectral/rings_block_%.f', sig2*1000));
 %title('Kernel matrix after sorting the data using the cluster information');
 
-%figure;
-%scatter(proj(:,1),proj(:,2),15,clust);
+figure;
+scatter(proj(:,1),proj(:,2),15,clust);
 %title('Projections onto subspace spanned by the 2nd and 3rd largest eigenvectors');
 
 
 
 end
 
-close all;
+%close all;
 
                               
                   
