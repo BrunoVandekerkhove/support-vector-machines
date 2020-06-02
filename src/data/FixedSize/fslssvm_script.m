@@ -52,7 +52,7 @@ repetitions = 1;
 % Parameter for input space selection
 % Please type >> help fsoperations; to get more information  
 k = 4;
-kernel_type = 'RBF_kernel'; % or 'lin_kernel', 'poly_kernel'
+kernel_type = 'poly_kernel'; % or 'lin_kernel', 'poly_kernel'
 global_opt = 'csa'; % 'csa' or 'ds'
 
 % Process to be performed
@@ -61,3 +61,6 @@ window = [15,20,25];
 
 % Perform FS-LSVM
 [e,s,t] = fslssvm(Xtrain, Ytrain, k, function_type, kernel_type, global_opt, user_process, window, Xtest, Ytest);
+
+
+%
