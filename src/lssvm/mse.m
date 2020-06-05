@@ -5,10 +5,10 @@ function perf=mse(e)
 %  'perf = mse(E);'
 %
 % see also:
-%    mae, linf, trimmedmse
+%    rmse, mae, linf, trimmedmse
 %
 
 % Copyright (c) 2011,  KULeuven-ESAT-SCD, License & help @ http://www.esat.kuleuven.be/sista/lssvmlab
 
-
+%perf = sum(sum(abs(e))) / numel(e);
 perf = sum(sum(e.^2)) / numel(e);
