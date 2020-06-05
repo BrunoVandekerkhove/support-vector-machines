@@ -1,0 +1,2 @@
+The SMOTE function takes the feature vectors with dimension(r,n) and the target class with dimension(r,1) as the input.
+And returns final_features vectors with dimension(r',n) and the target class with dimension(r',1) as the output.
