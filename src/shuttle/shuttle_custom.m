@@ -7,9 +7,9 @@ addpath(genpath('./data'))
 close all
 %% Read data
 data = load('shuttle.dat', '-ascii'); 
-data = data(1:10000,:);
+data = data(1:58000,:);
 %% Set up data
-classes_to_keep = 1:5;
+classes_to_keep = 1:7;
 indices_to_keep = ismember(data(:,end), classes_to_keep);
 use_testset = 1;
 X = data(indices_to_keep,1:end-1);
@@ -31,11 +31,12 @@ else
     Xtest = [];
     Ytest = [];
 end
+%[Xtrain,Ytrain,Xtest,Ytest] = initial(Xtrain,Ytrain,'c',Xtest,Ytest);
 %% Set estimation parameters
 repetitions = 1;
 k = 2;
 kernel_type = 'RBF_kernel'; % or 'lin_kernel', 'poly_kernel'
-user_processes = ["SV_L0_norm"]; %"FS-LSSVM"
+user_processes = "SV_L0_norm"; %
 class_order = [1,4,5,3];
 %% Perform LS-SVM
 bt = cputime;
@@ -85,18 +86,18 @@ for up_sidx = 1:ups
     end
 end
 %% Visualize results
-% figure;
-% boxplot(e, 'Label', user_process);
-% ylabel('Error estimate');
-% title('Error Comparison for different approaches (user processes)');
-% figure;
-% boxplot(s, 'Label', user_process);
-% ylabel('SV estimate');
-% title('Number of SV for different approaches (user processes)');
-% figure;
-% boxplot(t, 'Label', user_process);
-% ylabel('Time estimate');
-% title('Comparison for time taken by different approaches (user processes)');
+figure;
+boxplot((e./length(Ytest))', 'Label', user_processes);
+ylabel('Error estimate');
+title('Error Comparison for different approaches (user processes)');
+figure;
+boxplot(s', 'Label', user_processes);
+ylabel('SV estimate');
+title('Number of SV for different approaches (user processes)');
+figure;
+boxplot(t', 'Label', user_processes);
+ylabel('Time estimate');
+title('Comparison for time taken by different approaches (user processes)');
 %% Functions
 function [spvc, time, testYh] = fixed_size_apply(selected_class, ...
     Xtrain, Ytrain, Xtest, Ytest, ...
