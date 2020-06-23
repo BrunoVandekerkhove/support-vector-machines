@@ -5,7 +5,7 @@
 Two datasets are experimented with in figure \ref{functionestimation}. The first exists of 20 points lying on a slope. Therefore one can expect the linear kernel (which makes for a linear model) to outperform the others. The second (non-linear) dataset is more challenging such that other kernels which enable the SVM to model the non-linearities have to be used instead. 
 
 \par From the problem statement :
-$$\min_{w,b,\xi,\xi^*}\frac{1}{2}w\cdot w^T+C\cdot\sum_{k=1}^N\xi+\xi^*$$
+$$\min_{w,b,\xi,\xi^*}\frac{1}{2}ww^T+C\cdot\sum_{k=1}^N\xi+\xi^*$$
 where $\xi,\xi^*$ are slack variables representing deviation from the so-called \textit{$\epsilon$-insensitive tube} it can be deduced that the $C$ (the \textit{bound}) plays the usual role of a regularisation parameter, prioritising either the smoothness of the model or how much it fits the data (i.e. minimising the slack variables). $C=0$ leads to simple horizontal lines for the linear kernel which express the view that the two input features $x_1$ and $x_2$ aren't related. The $\epsilon$ parameter controls the width of the tube in which the data points are made to lie. A larger value decreases the number of support vectors and makes the model less accurate.
 
 \par The formulation resembles that of a least squares fit with Thikonov regularisation but the $\epsilon$-insensitive tube makes for a different loss function that encourages sparsity and since the problem is turned into a constrained optimisation problem a dual form can be expressed for which one can apply the kernel trick to be able to model any nonlinearities.
