@@ -16,7 +16,7 @@ To deal with the non-linearly separable classification problem in the example on
 
 \endgroup
 \vspace{-0.5cm}
-$$\min_x\frac{1}{2}\cdot w^T\cdot w+C\cdot \sum_{k=1}^N\xi_k\qquad\text{such that $y_k\cdot[w^T\cdot x_k+b]\geq 1-\xi_k$ and $\xi_k\geq 0$ $(\forall k\in\{1,..,N\})$}$$
+$$\min_{w,b,\xi}\frac{1}{2}\cdot w^Tw+C\cdot \sum_{k=1}^N\xi_k\qquad\text{such that $y_k\cdot[w^T\cdot x_k+b]\geq 1-\xi_k$ and $\xi_k\geq 0$ $(\forall k\in\{1,..,N\})$}$$
 A dual form can be expressed by making use of Lagrange multipliers which in this context are also called \textit{support values}. Any data points for which the corresponding support value isn't zero are called \textit{support vectors}. These lie close to the boundary or are misclassified\footnote{In the dual problem formulation the $\alpha$ values are minimised for those data points that are `similar' to data points that belong to the same class.}.
 
 \begin{figure}[ht]
