@@ -9,7 +9,7 @@ A repository containing work with support vector machines (SVMs) and least squar
 For a binary classifier where the distributions are (assumed or known to be) Gaussian with equal covariance matrices the decision boundary that maximises the posterior prob- ability P(Ci|x) becomes linear. This is independent of the amount of overlap. Trying to get a better boundary would lead to overfitting. In this particular example where Σxx = I one ends up with a perpendicular bisector of the segment connecting the two cluster means (−1,−1) and (1, 1), which gives f (x) = −x as a decision boundary.
 
 <p align="center">
-<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readm1.png?raw=true">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme1.png?raw=true">
 </p>
 
 ### Support Vector Machine Classifier
