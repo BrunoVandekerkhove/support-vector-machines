@@ -142,3 +142,5 @@ It looks like the accuracy is amongst the better ones. Fisher Discriminant Analy
 alright as well but isn’t experimented with here since it seemed redundant due to the close relation with LS-
 SVMs. Maybe more advanced neural networks might do better. A simple neural network constructed in MATLAB 6
 also got into the 70% accuracy .
+
+## Function Estimation & Time Series Prediction
