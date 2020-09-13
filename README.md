@@ -144,3 +144,109 @@ SVMs. Maybe more advanced neural networks might do better. A simple neural netwo
 also got into the 70% accuracy .
 
 ## Function Estimation & Time Series Prediction
+
+### Support vector machine for function estimation
+
+Two datasets are experimented with in figure 12. The first exists of 20 points lying on a slope. Therefore one can expect the linear kernel (which makes for a linear model) to outperform the others. The second (non-linear) dataset is more challenging such that other kernels which enable the SVM to model the non-linearities have to be used instead.
+
+From the problem statement :
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme15.png?raw=true">
+</p>
+
+where ξ, ξ∗ are slack variables representing deviation from the so-called ε-insensitive tube it can be deduced that the C (the bound) plays the usual role of a regularisation parameter, prioritising either the smoothness of the model or how much it fits the data (i.e. minimising the slack variables). C = 0 leads to simple horizontal lines for the linear kernel which express the view that the two input features x1 and x2 aren’t related. The ε parameter controls the width of the tube in which the data points are made to lie. A larger value decreases the number of support vectors and makes the model less accurate.
+
+The formulation resembles that of a least squares fit with Thikonov regularisation but the ε-insensitive tube makes for a different loss function that encourages sparsity and since the problem is turned into a constrained optimisation problem a dual form can be expressed for which one can apply the kernel trick to be able to model any nonlinearities.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme16.png?raw=true">
+</p>
+
+### A simple example: the sinc function
+
+Figure 13 shows the results of LS-SVM regression applied on the sinc function. The mean squared error is lowest for σ = 1.0,γ = 10 . The smaller σ value (0.01) leads to overfitting (the noise is being modelled). In this case the underlying function is known and it seems reasonable to take σ ∈ [0.1, 1.0] and, say, γ = 10 . However, an optimal parameter cannot be found as it depends on the training set that is being dealt with and even for a given training set there’s no unique parameter combination that works best.
+
+Results of automated tuning are shown hereunder :
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme17.png?raw=true">
+</p>
+
+The results are comparable to those obtained previously in the context of classification, with a few outliers for γ. Again, grid search appeared to be slower (185 seconds versus 110 for the simplex method). Some of the models seem to overfit the data a bit.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme18.png?raw=true">
+</p>
+
+When making use of a validation set that very set cannot be used for training. Making use of a Bayesian framework is an alternative and allows one to infer appropriate parameter combinations while making full use of the dataset. Depending on the kernel that is being used either 2 or 3 levels of inference are applied. At each of these level Bayes’ theorem is used to infer parameter values. The equations are :
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme19.png?raw=true">
+</p>
+
+As indicated by the colourings the evidence at any level equals the likelihood in the next level. At the first level one can take the logarithm of the product to see the relation with the primal form in the LS-SVM problem specification ; while the prior corresponds to the regularisation term the likelihood corresponds to the least squares cost term.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme20.png?raw=true">
+</p>
+
+One nice facet of this approach is that one ends up with error bars indicating uncertainty of the prediction. These error bars can be seen in figure 14 where the method is applied on the sinc function.
+
+### Automatic relevance determination (ARD)
+
+By modifying the kernel function for the LS-SVM dual formulation it becomes possible to disregard irrelevant or noisy input dimensions when these don’t contribute to the final classification (a form of dimensionality reduction). In the case of an RBF kernel by using a diagonal matrix S as a weighted norm a bandwidth is associated with each of the input dimensions. Level 3 of the Bayesian framework discussed before is then used to infer the elements of S and any input dimensions associated with small bandwidths are iteratively disregarded until no additional improvement is obtained. For the toy dataset the algorithm found x1 to be the sole relevant one which is also illustrated in figure 15. An other, crude way of doing relevance determination is to consider all possible non-empty subsets of the input features and applying cross-validation on the resulting data to figure out which subset generalises best. For the given data the conclusion remained the same as any subset excluding the first (non-noisy) dimension performed badly (mse > 0.1) and the subset excluding all but the first dimensions performed best (mse ≈ 0.012). This method wouldn’t be satisfactory in practice as the power set grows sharply as the number of input dimensions increases. Treating the problem as a global optimisation is more appropriate for example. Or even simply removing random features one by one as long as the results keep on improving.
+
+### Robust regression
+
+Two downsides of LS-SVMs are the loss of sparsity and the lack of robustness. Outliers can increase the variance of the decision boundary quite a bit due to the use of the least squares loss, which penalises outliers more than the mean absolute error does due to its gradient (such that there is more perturbation). If the noise on the data set is Gaussian then the least squares loss is appropriate, but in general the distribution of the noise is not known and in the case of the toy dataset dealt with here the noise isn’t normally distributed. The idea, then, is to find an LS-SVM model as per usual and apply methods from robust statistics on the resulting parameters. Specifically, a weight is assigned to each data point based on its error. Some possible weight functions are shown below.
+
+After assigning the weights a weighted LS-SVM is trained and the whole process may be repeated as desired. Results with 4 weight functions are compared with a non-robust LS-SVM approach in figure 16.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme21.png?raw=true">
+</p>
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme22.png?raw=true">
+</p>
+
+### Logmap dataset
+
+The provided model for predicting measurements for the logmap dataset performs quite badly as can be seen below. The results call for the tuning of the three parameters.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme23.png?raw=true">
+</p>
+
+A straightforward way of picking a so-called order of a time series model (i.e. the number of past measurements taken into account for prediction of the next measurement) is to take advantage of the fact that the given dataset is rather small and the order is a discrete variable. This makes it sensible to go over all possible orders and tune regularisation parameter γ and any of the kernel parameters for every possible order separately.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme24.png?raw=true">
+</p>
+
+To find good values for the parameters either cross-validation or the Bayesian framework discussed previously can be used. Both methods were tried and the results with the Bayesian framework are shown in figure 18. In that figure the mean squared errors are plotted in function of the order for LS-SVMs using RBF kernels with tuned parameters. This was measured for the training and the test set. A useful order appeared to lie somewhere in the early 20s and picking anything higher may cause poor generalisation due to overfitting. Results with a model with its order equal to 20 are shown below. The performance has clearly improved.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme25.png?raw=true">
+</p>
+
+### Santa Fe dataset
+
+The per-order mean squared errors for an analogous tuning approach applied to the Santa Fe dataset (this time by using cross-validation rather than making use of the Bayesian network) are shown in figure 20.
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme26.png?raw=true">
+</p>
+
+Picking the model with lowest error (prioritising a small order) gave the following result :
+
+<p align="center">
+<img src="https://github.com/BrunoVDK/support-vector-machines/blob/master/report/res/readme27.png?raw=true">
+</p>
+
+Due to the limited number of runs the whole tuning procedure by no means proves that this model is best or that this order is optimal. By doing more experiments confidence can grow that certain orders are optimal for this particular dataset.
+
+Up til now only LS-SVMs were toyed with. It’s also possible to work with classical SVMs which - due to the choice of loss function - provide sparsity without necessitating a pruning post-processing step or some other approach to enforce it. Using scikit-learn a script was built to do classical SVM regression using the SVR class. Grid search was done to tune the parameters of an RBF kernel first, which proved to be equivalent to the LS-SVM result while having less support vectors. An attempt was made at using an other kernel called the ANOVA kernel which is said to perform well in the case of multivariate regression problems, but despite some limited tuning (with a grid search) the results weren’t close to those of the RBF kernel. The sparsity of the classical SVMs with RBF kernels wasn’t impressive ; about 90% of the training set was kept. Other strategies such as LSTMs are always possible as well though the obtained results appear quite satisfactory.
+
+
